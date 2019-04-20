@@ -42,13 +42,111 @@ def print_boards(boards):
     print_boards_row(boards, 7,8,9,7,8,9)
     print()
 
+##########################
+###### MINI-MAX A-B ######
+##########################
+class GameState:
+    def __init__(self, boards, depth):
+        self.boards = boards
+        self.depth = depth
+        return
+class AlphaBeta:
+    # print utility value of root node (assuming it is max)
+    # print names of all nodes visited during search
+    def __init__(self, boards):
+        first_state = GameState(boards, 0)
+        self.game_state = first_state
+        self.game_tree = boards  # GameTree
+        #self.root = game_tree  # GameNode
+        self.max_depth = 3
+        return
+
+    def alpha_beta_search(self, game_state):
+        infinity = float('inf')
+        best_val = -infinity
+        beta = infinity
+
+        children = self.getChildren(game_state)
+        best_state = None
+        for state in children:
+            value = self.min_value(state, best_val, beta)
+            if value > best_val:
+                best_val = value
+                best_state = state
+        #print "AlphaBeta:  Utility Value of Root Node: = " + str(best_val)
+        #print "AlphaBeta:  Best State is: " + best_state.Name
+        return best_state
+
+    def max_value(self, state, alpha, beta):
+        #print "AlphaBeta-->MAX: Visited Node :: " + node.Name
+        if self.isTerminal(state):
+            return self.getUtility(state)
+        infinity = float('inf')
+        value = -infinity
+
+        children = self.getChildren(state)
+        for state in children:
+            value = max(value, self.min_value(state, alpha, beta))
+            if value >= beta:
+                return value
+            alpha = max(alpha, value)
+        return value
+
+    def min_value(self, state, alpha, beta):
+        #print "AlphaBeta-->MIN: Visited Node :: " + node.Name
+        if self.isTerminal(state):
+            return self.getUtility(state)
+        infinity = float('inf')
+        value = infinity
+
+        children = self.getChildren(state)
+        for state in children:
+            value = min(value, self.max_value(state, alpha, beta))
+            if value <= alpha:
+                return value
+            beta = min(beta, value)
+
+        return value
+    #                     #
+    #   UTILITY METHODS   #
+    #                     #
+
+    # successor states in a game tree are the child nodes...
+    def getChildren(self, game_state):
+        global curr
+        children = []
+        board=curr
+        boards = game_state.boards
+        for i in range(1,9):
+            if boards[board][i]==0:
+                next_boards = boards.copy()
+                next_boards[board][i] = 2
+                next_game_state = GameState(next_boards, game_state.depth)
+                print("next")
+                print_boards(next_game_state.boards)
+                children.append(next_game_state)
+        assert boards is not None
+        
+        return children
+
+    # return true if the node has NO children (successor states)
+    # return false if the node has children (successor states)
+    def isTerminal(self, state):
+        #assert node is not None
+        #return len(node.children) == 0
+        return state.depth == 3
+
+    def getUtility(self, state):
+        #assert node is not None
+        return state.getHeuristic()
+
 # choose a move to play, we are playing X
 def play():
     print_boards(boards)
     #start coding here
-
+    
     alphabeta = AlphaBeta(boards)
-    nextState = alphabeta.alpha_beta_search(boards)
+    nextState = alphabeta.alpha_beta_search(alphabeta.game_state)
     print(nextState)
 
 
@@ -117,101 +215,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-##########################
-###### MINI-MAX A-B ######
-##########################
-class GameState:
-    def __init__(self, boards, depth):
-        self.boards = boards
-        self.depth = depth
-        return
-
-
-
-
-class AlphaBeta:
-    # print utility value of root node (assuming it is max)
-    # print names of all nodes visited during search
-    def __init__(self, boards):
-        first_state = GameState(boards, 0)
-        self.game_state = first_state
-        self.game_tree = boards  # GameTree
-        self.root = game_tree  # GameNode
-        self.max_depth = 3
-        return
-
-    def alpha_beta_search(self, game_state):
-        infinity = float('inf')
-        best_val = -infinity
-        beta = infinity
-
-        children = self.getChildren(game_state)
-        best_state = None
-        for state in children:
-            value = self.min_value(state, best_val, beta)
-            if value > best_val:
-                best_val = value
-                best_state = state
-        print "AlphaBeta:  Utility Value of Root Node: = " + str(best_val)
-        print "AlphaBeta:  Best State is: " + best_state.Name
-        return best_state
-
-    def max_value(self, node, alpha, beta):
-        print "AlphaBeta-->MAX: Visited Node :: " + node.Name
-        if self.isTerminal(node):
-            return self.getUtility(node)
-        infinity = float('inf')
-        value = -infinity
-
-        children = self.getChildren(node)
-        for state in children:
-            value = max(value, self.min_value(state, alpha, beta))
-            if value >= beta:
-                return value
-            alpha = max(alpha, value)
-        return value
-
-    def min_value(self, node, alpha, beta):
-        print "AlphaBeta-->MIN: Visited Node :: " + node.Name
-        if self.isTerminal(node):
-            return self.getUtility(node)
-        infinity = float('inf')
-        value = infinity
-
-        children = self.getChildren(node)
-        for state in children:
-            value = min(value, self.max_value(state, alpha, beta))
-            if value <= alpha:
-                return value
-            beta = min(beta, value)
-
-        return value
-    #                     #
-    #   UTILITY METHODS   #
-    #                     #
-
-    # successor states in a game tree are the child nodes...
-    def getChildren(self, game_state):
-        global curr
-        children = []
-        board=curr
-        boards = game_state.boards
-        for i in range(1,9):
-            if boards[board][i]==0:
-                next_boards = boards.copy()
-                next_boards[board][i] = 2
-                children.append(next_boards)
-        assert boards is not None
-        return children
-
-    # return true if the node has NO children (successor states)
-    # return false if the node has children (successor states)
-    def isTerminal(self, node):
-        assert node is not None
-        return len(node.children) == 0
-
-    def getUtility(self, node):
-        assert node is not None
-        return node.value
