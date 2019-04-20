@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#/usr/bin/python3
 # Sample starter bot by Zac Partridge
 # Contact me at z.partridge@unsw.edu.au
 # 06/04/19
