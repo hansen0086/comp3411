@@ -20,30 +20,30 @@ curr = 0 # this is the current board to play in
 
 # print a row
 # This is just ported from game.c
-def print_board_row(board, a, b, c, i, j, k):
-    print(" "+s[board[a][i]]+" "+s[board[a][j]]+" "+s[board[a][k]]+" | " \
-             +s[board[b][i]]+" "+s[board[b][j]]+" "+s[board[b][k]]+" | " \
-             +s[board[c][i]]+" "+s[board[c][j]]+" "+s[board[c][k]])
+def print_boards_row(boards, a, b, c, i, j, k):
+    print(" "+s[boards[a][i]]+" "+s[boards[a][j]]+" "+s[boards[a][k]]+" | " \
+             +s[boards[b][i]]+" "+s[boards[b][j]]+" "+s[boards[b][k]]+" | " \
+             +s[boards[c][i]]+" "+s[boards[c][j]]+" "+s[boards[c][k]])
 
 # Print the entire board
 # This is just ported from game.c
-def print_board(board):
-    print_board_row(board, 1,2,3,1,2,3)
-    print_board_row(board, 1,2,3,4,5,6)
-    print_board_row(board, 1,2,3,7,8,9)
+def print_boards(boards):
+    print_boards_row(boards, 1,2,3,1,2,3)
+    print_boards_row(boards, 1,2,3,4,5,6)
+    print_boards_row(boards, 1,2,3,7,8,9)
     print(" ------+-------+------")
-    print_board_row(board, 4,5,6,1,2,3)
-    print_board_row(board, 4,5,6,4,5,6)
-    print_board_row(board, 4,5,6,7,8,9)
+    print_boards_row(boards, 4,5,6,1,2,3)
+    print_boards_row(boards, 4,5,6,4,5,6)
+    print_boards_row(boards, 4,5,6,7,8,9)
     print(" ------+-------+------")
-    print_board_row(board, 7,8,9,1,2,3)
-    print_board_row(board, 7,8,9,4,5,6)
-    print_board_row(board, 7,8,9,7,8,9)
+    print_boards_row(boards, 7,8,9,1,2,3)
+    print_boards_row(boards, 7,8,9,4,5,6)
+    print_boards_row(boards, 7,8,9,7,8,9)
     print()
 
 # choose a move to play
 def play():
-    print_board(boards)
+    print_boards(boards)
 
     # just play a random move for now
     n = np.random.randint(1,9)
@@ -88,7 +88,6 @@ def parse(string):
     elif command == "loss":
         print("We lost :(")
         return -1
-    print ("returning zero which should be not be seen")
     return 0
 
 # connect to socket
