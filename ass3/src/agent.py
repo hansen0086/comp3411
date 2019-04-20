@@ -43,7 +43,7 @@ def print_board(board):
 
 # choose a move to play
 def play():
-    # print_board(boards)
+    print_board(boards)
 
     # just play a random move for now
     n = np.random.randint(1,9)
@@ -69,7 +69,7 @@ def parse(string):
         args = args.split(",")
     else:
         command, args = string, []
-
+   
     if command == "second_move":
         place(int(args[0]), int(args[1]), 2)
         return play()
@@ -88,6 +88,7 @@ def parse(string):
     elif command == "loss":
         print("We lost :(")
         return -1
+    print ("returning zero which should be not be seen")
     return 0
 
 # connect to socket
