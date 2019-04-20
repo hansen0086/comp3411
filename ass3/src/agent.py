@@ -41,7 +41,7 @@ def print_boards(boards):
     print_boards_row(boards, 7,8,9,7,8,9)
     print()
 
-# choose a move to play
+# choose a move to play, we are playing X
 def play():
     print_boards(boards)
 
