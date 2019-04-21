@@ -50,6 +50,35 @@ class GameState:
         self.boards = boards
         self.depth = depth
         return
+    #return a integer to indicate the advantage
+    def getHeuristic(self):
+        #if this is a win state for X, return infinity
+        if self.winState(1)== True :
+            return float('inf')
+        elif self.winState(2) == True :
+            return -float('inf')
+        else :
+            #Todo: calculate heuristic here
+            return 1
+
+        return 0
+    #return a bool to indicate whether this board is a winstate for a given player
+    def winState(self, player):
+        curr_boards = self.boards
+        for i in range(1,9):
+            if (player==curr_boards[i][1]==curr_boards[i][2]==curr_boards[i][3] or 
+            player==curr_boards[i][4]==curr_boards[i][5]==curr_boards[i][6] or
+            player==curr_boards[i][7]==curr_boards[i][8]==curr_boards[i][9] or
+            player==curr_boards[i][1]==curr_boards[i][4]==curr_boards[i][7] or
+            player==curr_boards[i][2]==curr_boards[i][5]==curr_boards[i][8] or
+            player==curr_boards[i][3]==curr_boards[i][6]==curr_boards[i][9] or
+            player==curr_boards[i][1]==curr_boards[i][5]==curr_boards[i][9] or
+            player==curr_boards[i][3]==curr_boards[i][5]==curr_boards[i][7]) :
+                return True
+        return False
+
+
+
 class AlphaBeta:
     # print utility value of root node (assuming it is max)
     # print names of all nodes visited during search
