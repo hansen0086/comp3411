@@ -17,7 +17,7 @@ import numpy as np
 boards = np.zeros((10, 10), dtype="int8")
 s = [".","X","O"]
 curr = 0 # this is the current board to play in
-max_depth = 2
+max_depth = 4
 
 # print a row. | . O . | . . .
 '''
@@ -77,8 +77,10 @@ class GameState:
             print("the board above has the heuristic of -inf" )
             return -float('inf')
         else :
-            #Todo: calculate heuristic here
-            heuristic = self.possible_num_ways_win(1)
+            #TODO: calculate heuristic here
+            heurA = self.possible_num_ways_win(1) - self.possible_num_ways_win(2)
+            heurB = self.min_move_to_win(1)-self.min_move_to_win(2)
+            heuristic =  heurA + heurB
             print_boards(self.boards)
             print("the board above has the heuristic of %d" % heuristic)
             #print("it is heuristic")
@@ -88,16 +90,77 @@ class GameState:
         #return a bool to indicate whether this board is a winstate for a given player
         #
         #TODO
-    #def min_move_to_win(self, player):
-     #   curr_boards = self.boards
-    #    min = 0
+
+    def min_move_to_win(self, player1):
+        curr_boards = self.boards
+        score = 0
+        total = 0
         
-     #   for i in range(1,10):
-      #      if(curr_boards[i][1]==player):
-      #          for j in (2,3):
-      #              if curr_boards[i][j] == player:
-      #                 min = 1
-    
+        for i in range(1,10):
+            total = total + score
+            score = 0
+            if(curr_boards[i][1]==player1):
+                for li in ([2,3],[4,7],[5,9]):
+                    if ((curr_boards[i][li[0]]==player1 and curr_boards[i][li[1]]==0) or 
+                    (curr_boards[i][li[0]]==0 and curr_boards[i][li[1]]==player1)):
+                        score = 1
+                        continue
+            
+            if(curr_boards[i][2] == player1):
+                for li in ([1,3],[5,8]):
+                    if ((curr_boards[i][li[0]]==player1 and curr_boards[i][li[1]]==0) or 
+                    (curr_boards[i][li[0]]==0 and curr_boards[i][li[1]]==player1)):
+                        score = 1
+                        continue
+            if(curr_boards[i][3] == player1):
+                for li in ([1,2],[5,7],[6,9]):
+                    if ((curr_boards[i][li[0]]==player1 and curr_boards[i][li[1]]==0) or 
+                    (curr_boards[i][li[0]]==0 and curr_boards[i][li[1]]==player1)):
+                        score = 1
+                        continue
+
+            if(curr_boards[i][4] == player1):
+                for li in ([1,7],[5,6]):
+                    if ((curr_boards[i][li[0]]==player1 and curr_boards[i][li[1]]==0) or 
+                    (curr_boards[i][li[0]]==0 and curr_boards[i][li[1]]==player1)):
+                       score = 1
+                       continue
+
+            if(curr_boards[i][5] == player1):
+                for li in ([1,9],[2,8],[3,7],[4,6]):
+                    if ((curr_boards[i][li[0]]==player1 and curr_boards[i][li[1]]==0) or 
+                    (curr_boards[i][li[0]]==0 and curr_boards[i][li[1]]==player1)):
+                       score = 1
+                       continue
+
+            if(curr_boards[i][6] == player1):
+                for li in ([4,5],[3,9]):
+                    if ((curr_boards[i][li[0]]==player1 and curr_boards[i][li[1]]==0) or 
+                    (curr_boards[i][li[0]]==0 and curr_boards[i][li[1]]==player1)):
+                       score = 1
+                       continue
+            
+            if(curr_boards[i][7] == player1):
+                for li in ([1,4],[3,5],[8,9]):
+                    if ((curr_boards[i][li[0]]==player1 and curr_boards[i][li[1]]==0) or 
+                    (curr_boards[i][li[0]]==0 and curr_boards[i][li[1]]==player1)):
+                       score = 1
+                       continue
+            if(curr_boards[i][8] == player1):
+                for li in ([2,5],[7,9]):
+                    if ((curr_boards[i][li[0]]==player1 and curr_boards[i][li[1]]==0) or 
+                    (curr_boards[i][li[0]]==0 and curr_boards[i][li[1]]==player1)):
+                        score = 1
+                        continue
+            if(curr_boards[i][9] == player1):
+                for li in ([1,5],[3,6],[7,8]):
+                    if ((curr_boards[i][li[0]]==player1 and curr_boards[i][li[1]]==0) or 
+                    (curr_boards[i][li[0]]==0 and curr_boards[i][li[1]]==player1)):
+                       score = 1
+                       continue
+        print(total)
+        return total 
+
     def possible_num_ways_win(self, player):
         curr_boards = self.boards
         num = 0
@@ -170,7 +233,12 @@ class AlphaBeta:
         infinity = float('inf')
         best_val = -infinity
         beta = infinity
-        
+        '''
+        if self.getUtility(game_state)==float('inf'):
+            return float('inf')
+        if self.getUtility(game_state)==-float('inf') :
+            return -float('inf')
+        '''
         children = self.getChildren(game_state)
         best_state = None
         for state in children:
@@ -192,6 +260,10 @@ class AlphaBeta:
             return self.getUtility(state)
         infinity = float('inf')
         value = -infinity
+        if self.getUtility(state)==float('inf'):
+            return float('inf')
+        if self.getUtility(state)==-float('inf') :
+            return -float('inf')
 
         children = self.getChildren(state)
         for state in children:
@@ -210,7 +282,11 @@ class AlphaBeta:
             return self.getUtility(state)
         infinity = float('inf')
         value = infinity
-        
+        if self.getUtility(state)==float('inf'):
+            return float('inf')
+        if self.getUtility(state)==-float('inf') :
+            return -float('inf')
+
         children = self.getChildren(state)
         #i = 0
         for state in children:
