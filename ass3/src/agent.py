@@ -19,7 +19,8 @@ s = [".","X","O"]
 curr = 0 # this is the current board to play in
 max_depth = 4
 
-# print a row
+# print a row. | . O . | . . .
+
 # This is just ported from game.c
 def print_boards_row(boards, a, b, c, i, j, k):
     print(" "+s[boards[a][i]]+" "+s[boards[a][j]]+" "+s[boards[a][k]]+" | " \
@@ -46,15 +47,15 @@ def print_boards(boards):
 ###### MINI-MAX A-B ######
 ##########################
 class GameState:
-    def __init__(self, boards, depth,player,value):
+    def __init__(self, boards, depth,player,prev_move):
         self.boards = boards
         self.depth = depth
         self.player = player
-        self.prev_move= value
+        self.prev_move= prev_move
         return
     #return a integer to indicate the advantage
     def getHeuristic(self):
-        #if this is a win state for X, return infinity
+                #if this is a win state for X, return infinity
         if self.winState(1)== True :
             print_boards(self.boards)
             print("the board above has the heuristic of inf" )
@@ -141,6 +142,7 @@ class AlphaBeta:
         return
 
     def alpha_beta_search(self, game_state):
+        print("alpha_beta_search is called")
         infinity = float('inf')
         best_val = -infinity
         beta = infinity
@@ -150,11 +152,14 @@ class AlphaBeta:
         for state in children:
             value = self.min_value(state, best_val, beta)
             #print (value)
+
+            print("printing value %f"% value)
             if value > best_val:
                 best_val = value
                 best_state = state
         #print "AlphaBeta:  Utility Value of Root Node: = " + str(best_val)
         #print "AlphaBeta:  Best State is: " + best_state.Name
+        #assert best_state is not None
         return best_state
 
     def max_value(self, state, alpha, beta):
@@ -233,16 +238,23 @@ class AlphaBeta:
 
 # choose a move to play, we are playing X
 def play():
+    global curr
     #global max_depth
     #print_boards(boards)
     #start coding here
-    
     curr_board = boards
     print ("the curr board is ")
     #print_boards(curr_board)
     next_move=0
     alphabeta = AlphaBeta(boards)
     nextState = alphabeta.alpha_beta_search(alphabeta.game_state)
+    if (nextState == None):
+        print("I LOSE")
+        for i in range(1,10):
+            if curr_board[curr][i]==0:
+                return i
+        
+    
     next_board = nextState.boards
     print("trying to play")
     #print_boards(next_board)
@@ -250,15 +262,14 @@ def play():
         for j in range(1,10):
             #print("\n")
             #print(i,j)
-            print(curr_board[i][j])
-            print(next_board[i][j])
+            #print(curr_board[i][j])
+            #print(next_board[i][j])
             if not (curr_board[i][j] == next_board[i][j]):
                 next_move = j
                 break
-
-
-
+    print_boards(curr_board)
     print ("we are playing move %d\n" % (next_move))
+    print_boards(next_board)
 
     place(curr, next_move, 1)
     return next_move
