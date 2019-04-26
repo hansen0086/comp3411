@@ -1,4 +1,4 @@
-#/usr/bin/python3
+#!/usr/bin/python3
 # Sample starter bot by Zac Partridge
 # Contact me at z.partridge@unsw.edu.au
 # 06/04/19
@@ -17,7 +17,7 @@ import numpy as np
 boards = np.zeros((10, 10), dtype="int8")
 s = [".","X","O"]
 curr = 0 # this is the current board to play in
-
+max_depth = 4
 
 # print a row
 # This is just ported from game.c
@@ -46,26 +46,75 @@ def print_boards(boards):
 ###### MINI-MAX A-B ######
 ##########################
 class GameState:
-    def __init__(self, boards, depth):
+    def __init__(self, boards, depth,player,value):
         self.boards = boards
         self.depth = depth
+        self.player = player
+        self.prev_move= value
         return
     #return a integer to indicate the advantage
     def getHeuristic(self):
         #if this is a win state for X, return infinity
         if self.winState(1)== True :
+            print_boards(self.boards)
+            print("the board above has the heuristic of inf" )
             return float('inf')
         elif self.winState(2) == True :
+            print_boards(self.boards)
+            print("the board above has the heuristic of -inf" )
             return -float('inf')
         else :
             #Todo: calculate heuristic here
-            return 1
+            heuristic = self.possible_num_ways_win(1)
+            print_boards(self.boards)
+            print("the board above has the heuristic of %d" % heuristic)
+            #print("it is heuristic")
+            #print(heuristic)
+            return heuristic
 
-        return 0
-    #return a bool to indicate whether this board is a winstate for a given player
+        #return a bool to indicate whether this board is a winstate for a given player
+    def possible_num_ways_win(self, player):
+        curr_boards = self.boards
+        num = 0
+        if(player ==1):
+            player2 =2
+        else:
+            player2 =1 
+
+        for i in range(1,10):
+            if (curr_boards[i][1]==player or curr_boards[i][2]==player or curr_boards[i][3]==player):
+                if not (curr_boards[i][1]==player2 or curr_boards[i][2]==player2 or curr_boards[i][3]==player2):
+                    num = num+1
+            if(curr_boards[i][4]==player or curr_boards[i][5]==player or curr_boards[i][6] == player):
+                if not (curr_boards[i][4]==player2 or curr_boards[i][5]==player2 or curr_boards[i][6] == player2):
+                    num = num+1
+            if(curr_boards[i][7]==player or curr_boards[i][8]==player or curr_boards[i][9] == player):
+                if not (curr_boards[i][7]==player2 or curr_boards[i][8]==player2 or curr_boards[i][9] == player2):
+                    num = num+1
+            if(curr_boards[i][1]==player or curr_boards[i][4]==player or curr_boards[i][7] == player):
+                if not (curr_boards[i][1]==player2 or curr_boards[i][4]==player2 or curr_boards[i][7] == player2):
+                    num = num+1
+            if(curr_boards[i][2]==player or curr_boards[i][5]==player or curr_boards[i][8] == player):
+                if not (curr_boards[i][2]==player2 or curr_boards[i][5]==player2 or curr_boards[i][8] == player2):
+                    num = num+1
+            if(curr_boards[i][3]==player or curr_boards[i][6]==player or curr_boards[i][9] == player):
+                if not (curr_boards[i][3]==player2 or curr_boards[i][6]==player2 or curr_boards[i][9] == player2):
+                    num = num+1
+            if(curr_boards[i][1]==player or curr_boards[i][5]==player or curr_boards[i][9] ==player):
+                if not (curr_boards[i][1]==player2 or curr_boards[i][5]==player2 or curr_boards[i][9] == player2):
+                    num = num+1
+            if(curr_boards[i][3]==player or curr_boards[i][5]==player or curr_boards[i][7] == player) :
+                if not (curr_boards[i][3]==player2 or curr_boards[i][5]==player2 or curr_boards[i][7] == player2):
+                    num = num+1
+        return num
+    
+    #def min_move_to_win(self, player):
+        #curr_boards = self.boards
+
+    
     def winState(self, player):
         curr_boards = self.boards
-        for i in range(1,9):
+        for i in range(1,10):
             if (player==curr_boards[i][1]==curr_boards[i][2]==curr_boards[i][3] or 
             player==curr_boards[i][4]==curr_boards[i][5]==curr_boards[i][6] or
             player==curr_boards[i][7]==curr_boards[i][8]==curr_boards[i][9] or
@@ -83,11 +132,12 @@ class AlphaBeta:
     # print utility value of root node (assuming it is max)
     # print names of all nodes visited during search
     def __init__(self, boards):
-        first_state = GameState(boards, 0)
+        global curr
+        first_state = GameState(boards, 0,2, curr)
         self.game_state = first_state
         self.game_tree = boards  # GameTree
         #self.root = game_tree  # GameNode
-        self.max_depth = 3
+
         return
 
     def alpha_beta_search(self, game_state):
@@ -99,6 +149,7 @@ class AlphaBeta:
         best_state = None
         for state in children:
             value = self.min_value(state, best_val, beta)
+            #print (value)
             if value > best_val:
                 best_val = value
                 best_state = state
@@ -143,16 +194,23 @@ class AlphaBeta:
     # successor states in a game tree are the child nodes...
     def getChildren(self, game_state):
         global curr
+        curr_depth = game_state.depth
+        next_depth = curr_depth +1
+        if(game_state.player==1):
+            next_player=2
+        else:
+            next_player=1
+
         children = []
-        board=curr
+        board=game_state.prev_move
         boards = game_state.boards
-        for i in range(1,9):
+        for i in range(1,10):
             if boards[board][i]==0:
                 next_boards = boards.copy()
-                next_boards[board][i] = 2
-                next_game_state = GameState(next_boards, game_state.depth)
-                print("next")
-                print_boards(next_game_state.boards)
+                next_boards[board][i] = next_player
+                next_game_state = GameState(next_boards, next_depth,next_player, i)
+                #print("this is a board in depth %d" % next_depth)
+                #print_boards(next_game_state.boards)
                 children.append(next_game_state)
         assert boards is not None
         
@@ -163,7 +221,11 @@ class AlphaBeta:
     def isTerminal(self, state):
         #assert node is not None
         #return len(node.children) == 0
-        return state.depth == 3
+        global max_depth
+        
+        if(state.depth==max_depth):
+            return True
+        return False
 
     def getUtility(self, state):
         #assert node is not None
@@ -171,22 +233,35 @@ class AlphaBeta:
 
 # choose a move to play, we are playing X
 def play():
-    print_boards(boards)
+    #global max_depth
+    #print_boards(boards)
     #start coding here
     
+    curr_board = boards
+    print ("the curr board is ")
+    #print_boards(curr_board)
+    next_move=0
     alphabeta = AlphaBeta(boards)
     nextState = alphabeta.alpha_beta_search(alphabeta.game_state)
-    print(nextState)
+    next_board = nextState.boards
+    print("trying to play")
+    #print_boards(next_board)
+    for i in range(1,10):
+        for j in range(1,10):
+            #print("\n")
+            #print(i,j)
+            print(curr_board[i][j])
+            print(next_board[i][j])
+            if not (curr_board[i][j] == next_board[i][j]):
+                next_move = j
+                break
 
 
-    # just play a random move for now
-    n = np.random.randint(1,9)
-    while boards[curr][n] != 0:
-        n = np.random.randint(1,9)
 
-    # print("playing", n)
-    place(curr, n, 1)
-    return n
+    print ("we are playing move %d\n" % (next_move))
+
+    place(curr, next_move, 1)
+    return next_move
 
 # place a move in the global boards
 def place(board, num, player):
@@ -217,10 +292,10 @@ def parse(string):
         place(curr, int(args[0]), 2)
         return play()
     elif command == "win":
-        print("Yay!! We win!! :)")
+        print("This is Hansen, We win!! :)")
         return -1
     elif command == "loss":
-        print("We lost :(")
+        print("This is Hansen,We lost :(")
         return -1
     return 0
 
