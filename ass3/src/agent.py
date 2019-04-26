@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#/usr/bin/python3
 # Sample starter bot by Zac Partridge
 # Contact me at z.partridge@unsw.edu.au
 # 06/04/19
@@ -17,9 +17,21 @@ import numpy as np
 boards = np.zeros((10, 10), dtype="int8")
 s = [".","X","O"]
 curr = 0 # this is the current board to play in
-max_depth = 4
+max_depth = 2
 
 # print a row. | . O . | . . .
+'''
+class Node(object):
+    def __init__(self, state):
+        self.state = state
+        self.children = []
+
+    def add_child(self, obj):
+        self.children.append(obj)
+    
+    def getChild(self,num):
+        return self.children[num]
+'''
 
 # This is just ported from game.c
 def print_boards_row(boards, a, b, c, i, j, k):
@@ -74,6 +86,18 @@ class GameState:
             return heuristic
 
         #return a bool to indicate whether this board is a winstate for a given player
+        #
+        #TODO
+    #def min_move_to_win(self, player):
+     #   curr_boards = self.boards
+    #    min = 0
+        
+     #   for i in range(1,10):
+      #      if(curr_boards[i][1]==player):
+      #          for j in (2,3):
+      #              if curr_boards[i][j] == player:
+      #                 min = 1
+    
     def possible_num_ways_win(self, player):
         curr_boards = self.boards
         num = 0
@@ -138,7 +162,7 @@ class AlphaBeta:
         self.game_state = first_state
         self.game_tree = boards  # GameTree
         #self.root = game_tree  # GameNode
-
+        #self.root = Node(first_state)
         return
 
     def alpha_beta_search(self, game_state):
@@ -146,13 +170,13 @@ class AlphaBeta:
         infinity = float('inf')
         best_val = -infinity
         beta = infinity
-
+        
         children = self.getChildren(game_state)
         best_state = None
         for state in children:
+            #stateNode = Node(state)
+            #self.root.add_child(stateNode)
             value = self.min_value(state, best_val, beta)
-            #print (value)
-
             print("printing value %f"% value)
             if value > best_val:
                 best_val = value
@@ -171,10 +195,13 @@ class AlphaBeta:
 
         children = self.getChildren(state)
         for state in children:
-            value = max(value, self.min_value(state, alpha, beta))
-            if value >= beta:
-                return value
-            alpha = max(alpha, value)
+            eval = self.min_value(state, alpha, beta)
+            value = max(value, eval)
+            alpha = max(alpha, eval)
+            if beta <= alpha:
+                break
+            #if value >= beta:
+            #    return value
         return value
 
     def min_value(self, state, alpha, beta):
@@ -183,13 +210,18 @@ class AlphaBeta:
             return self.getUtility(state)
         infinity = float('inf')
         value = infinity
-
+        
         children = self.getChildren(state)
+        #i = 0
         for state in children:
-            value = min(value, self.max_value(state, alpha, beta))
-            if value <= alpha:
-                return value
-            beta = min(beta, value)
+            #self.getChildren(i).add_child(state)
+            eval = self.max_value(state, alpha, beta)
+            value = min(value, eval)
+            #if value <= alpha:
+            #   return value
+            beta = min(beta, eval)
+            if beta <= alpha:
+                break
 
         return value
     #                     #
@@ -200,6 +232,7 @@ class AlphaBeta:
     def getChildren(self, game_state):
         global curr
         curr_depth = game_state.depth
+        #print(curr_depth)
         next_depth = curr_depth +1
         if(game_state.player==1):
             next_player=2
@@ -214,6 +247,7 @@ class AlphaBeta:
                 next_boards = boards.copy()
                 next_boards[board][i] = next_player
                 next_game_state = GameState(next_boards, next_depth,next_player, i)
+                #print(next_game_state.depth)
                 #print("this is a board in depth %d" % next_depth)
                 #print_boards(next_game_state.boards)
                 children.append(next_game_state)
