@@ -422,7 +422,7 @@ struct node** getChildren(struct node* game_state){
     else
         next_player=1;
 
-    struct node* children[10];
+    struct node** children = malloc(10*sizeof(struct node *));
     for(int i=1; i<10; i++)
         children[i] = malloc(sizeof(struct node));
     
@@ -438,9 +438,7 @@ struct node** getChildren(struct node* game_state){
             assert(boards!=NULL);
         }
     }
-
     return children;
-
 }
     
 int** copyBoard(int** boards){
