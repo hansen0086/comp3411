@@ -292,7 +292,7 @@ double getHeuristic(struct node* state){
 }
 
 struct node * alphabeta(struct node* game_state){
-    int best_val = -INFINITY;
+    double best_val = -INFINITY;
     double beta = INFINITY;
     
     //MAYBE FAULSE
@@ -379,7 +379,16 @@ int play(){
   int next_move = 0;
   //TODO
   int curr = move[m];
-  struct node* game_state = newGameState(board, 0, 2, curr);
+  int ** temp_board;
+  temp_board = (int **) malloc(sizeof(int *)*10);
+  for(int i=0;i<10;i++){
+    temp_board[i] = (int *)malloc(sizeof(int)*10); 
+  }
+  for(int i=0;i<10;i++){
+    for(int j=0;j<10;j++)
+    temp_board[i][j]= board[i][j];
+  }
+  struct node* game_state = newGameState(temp_board, 0, 2, curr);
   struct node* nextState = alphabeta(game_state);
   if(nextState == NULL){
     printf("I LOSE");
