@@ -62,9 +62,7 @@ def print_boards(boards):
     print_boards_row(boards, 7,8,9,7,8,9)
     print()
 
-##########################
-###### MINI-MAX A-B ######
-##########################
+# GameState is the node of the tree
 class GameState:
     def __init__(self, boards, depth,player,prev_move):
         self.boards = boards
@@ -74,12 +72,14 @@ class GameState:
         return
     #return a integer to indicate the advantage
     def getHeuristic(self):
-                #if this is a win state for X, return infinity
+        #if this is a win state for X, return infinity
         if self.winState(1)== True :
             return float('inf')
+        #if this is a win state for O, return -infinity
         elif self.winState(2) == True :
             return -float('inf')
         else :
+        #if it is not end state, we calculate the value heuristic for each node
             heurA = 0
             heurB = 0
             heuristic =0
@@ -88,10 +88,6 @@ class GameState:
                 heurB = -3*self.is_one_more_to_win(2, i) - self.possible_num_ways_win(2, i) 
                 heuristic = heuristic + heurA + heurB 
             return heuristic
-
-        #return a bool to indicate whether this board is a winstate for a given player
-        #
-        #TODO
 
     #return if there is a potential win state
     def is_one_more_to_win(self, player1, i):
@@ -201,7 +197,7 @@ class GameState:
         return False
 
 
-
+# alphabeta search
 class AlphaBeta:
 
     def __init__(self, boards):
@@ -227,10 +223,12 @@ class AlphaBeta:
                 best_state = state
 
         return best_state
-
+    # max for alphabeta search
     def max_value(self, state, alpha, beta):
-        if self.isTerminal(state):
-            return self.getUtility(state)
+        global max_depth
+        # if it is terminal node get heuristic
+        if state.depth==max_depth:
+            return state.getHeuristic()
 
         infinity = float('inf')
         value = -infinity
@@ -248,10 +246,13 @@ class AlphaBeta:
             alpha = max(alpha, value)
         return value
 
+    # min for alphabeta search
     def min_value(self, state, alpha, beta):
-        #print "AlphaBeta-->MIN: Visited Node :: " + node.Name
-        if self.isTerminal(state):
-            return self.getUtility(state)
+        global max_depth
+
+        # if it is terminal node get heuristic
+        if state.depth==max_depth:
+            return state.getHeuristic()
         infinity = float('inf')
         value = infinity
 
@@ -268,11 +269,8 @@ class AlphaBeta:
                 return value
             beta = min(beta, value)
         return value
-    #                     #
-    #   UTILITY METHODS   #
-    #                     #
 
-    # successor states in a game tree are the child nodes...
+    # get child notes for current game state
     def getChildren(self, game_state):
         global curr
         curr_depth = game_state.depth
@@ -295,27 +293,20 @@ class AlphaBeta:
         
         return children
 
-    # return true if the node has NO children (successor states)
-    # return false if the node has children (successor states)
-    def isTerminal(self, state):
-        #assert node is not None
-        #return len(node.children) == 0
-        global max_depth
-        
-        if(state.depth==max_depth):
-            return True
-        return False
+    # return true if the node has NO children
+    # return false if the node has children 
+    # def isTerminal(self, state):
+    #     global max_depth
+    #     if():
+    #         return True
+    #     return False
 
-    def getUtility(self, state):
-        #assert node is not None
-        return state.getHeuristic()
-
-# choose a move to play, we are playing X
+# choose a move to play, we are playing X (1)
 def play():
     global curr
     global num_move
     global max_depth
-    print(max_depth)
+    #print(max_depth)
 
     curr_board = boards
 
@@ -330,28 +321,21 @@ def play():
         
     
     next_board = nextState.boards
-    #print("trying to play")
-    #print_boards(next_board)
+
     for i in range(1,10):
         for j in range(1,10):
-            #print("\n")
-            #print(i,j)
-            #print(curr_board[i][j])
-            #print(next_board[i][j])
             if not (curr_board[i][j] == next_board[i][j]):
                 next_move = j
                 break
-    # print ("we are playing move %d on the board %d\n" % (next_move, curr))
-    # print_boards(next_board)
     
-    # if(num_move > 15):
-    #     max_depth = 5
-    # if(num_move>20):
-    #     max_depth = 6
-    # if(num_move > 35):
-    #     max_depth = 8
-    # if(num_move >40):
-    #     max_depth = 10
+    if(num_move > 15):
+        max_depth = 5
+    if(num_move>20):
+        max_depth = 6
+    if(num_move > 35):
+        max_depth = 8
+    if(num_move >40):
+        max_depth = 10
     place(curr, next_move, 1)
     return next_move
 
