@@ -1,0 +1,367 @@
+<HTML>
+<HEAD>
+  <TITLE>COMP3411 Tutorial Solutions Week 7</TITLE>
+</HEAD>
+<style><!-- A {text-decoration:none} --></style>
+<BODY ALINK="#660000" VLINK="#000066" LINK="#800066" BGCOLOR="#ffffff">
+
+<H2><P><CENTER><B><FONT COLOR="#000066">
+COMP3411/9414 Artificial Intelligence<br>
+Session 1, 2019</FONT></B></CENTER></P></H2>
+
+<H2><P><CENTER><B>Tutorial Solutions - Week 7</B></CENTER></P></H2>
+
+<P><B><FONT SIZE=-1>
+<SCRIPT LANGUAGE="JavaScript">
+document.write("This page was last updated: " +
+document.lastModified);
+</SCRIPT>
+</FONT>
+</B>
+</P>
+
+<hr align=left>
+
+<b>Activity 7.1</b> Three Godesses in a Temple
+<hr>
+<p>
+Three goddesses were sitting in an old Indian temple.
+Their names were Truth, Lie and Wisdom.
+Truth always told the truth, Lie always lied and
+Wisdom sometimes told the truth and sometimes lied.
+A man entered the temple. He first asked the goddess on the left:
+"Who is sitting next to you?"
+"Truth," she answered.
+He then asked the middle one: "Who are you?"
+"Wisdom."
+Finally he asked the one on the right: "Who is your neighbor?"
+"Lie," she replied.
+Can you say which goddess was which?
+<p>
+The goddess on left cannot be True because she said someone else was True.
+The middle one cannot be True either, so the one on the right must be True.
+This means the middle one is Lie and the left goddess is Wisdom.
+<p>
+<hr>
+<b>Activity 7.2</b> Validity and Satisfiability
+<hr>
+<p>
+(Exercise 7.10 from R &amp; N)
+<p>
+Decide whether each of the following sentences is valid,
+satisfiable, or neither. Verify your decisions using
+truth tables or equivalence and inference rules.
+For those that are satisfiable, list all the models that satisfy them.
+<p>
+<ol type=a>
+<li> Smoke &rArr; Smoke<br>
+<blockquote>
+Valid &nbsp; [implication, excluded middle]
+</blockquote>
+<p>
+<li> Smoke &rArr; Fire<br>
+<blockquote>
+Satisfiable
+<p>
+<table border=1>
+<tr align=center><th>Smoke</th><th>Fire</th><th>Smoke &rArr; Fire</th></tr>
+<tr align=center><td>T</td><td>T</td><td>T</td></tr>
+<tr align=center><td>T</td><td>F</td><td>F</td></tr>
+<tr align=center><td>F</td><td>T</td><td>T</td></tr>
+<tr align=center><td>F</td><td>F</td><td>T</td></tr>
+</table>
+<p>
+Models are: {Smoke, Fire}, {Fire}, {}
+</blockquote>
+<p>
+<li> ( Smoke &rArr; Fire ) &rArr; ( &not; Smoke &rArr; &not; Fire )<br>
+<blockquote>
+Satisfiable
+<p>
+<table border=1>
+<tr align=center><th>Smoke</th><th>Fire</th><th>Smoke &rArr; Fire</th><th>&not; Smoke &rArr; &not; Fire</th><th>KB</th></tr>
+<tr align=center><td>T</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+<tr align=center><td>T</td><td>F</td><td>F</td><td>T</td><td>T</td></tr>
+<tr align=center><td>F</td><td>T</td><td>T</td><td>F</td><td>F</td></tr>
+<tr align=center><td>F</td><td>F</td><td>T</td><td>T</td><td>T</td></tr>
+</table>
+<p>
+Models are: {Smoke, Fire}, {Smoke}, {}
+</blockquote>
+<p>
+<li> Smoke &or; Fire &or; &not; Fire<br>
+<blockquote>
+Valid
+</blockquote>
+<p>
+<li> (( Smoke &and; Heat ) &rArr; Fire ) &hArr;
+     (( Smoke &rArr; Fire ) &or; ( Heat &rArr; Fire ))<br>
+<blockquote>
+Valid<br>
+<table>
+<tr><td>(( S &and; H ) &rArr; F )</td><td>&hArr; (F &or; &not;(S &and; H))</td><td>[implication]</tr>
+<tr><td></td><td>&hArr; (F &or; &not; S &or; &not H)</td><td>[de Morgan]</td></tr>
+<tr><td></td><td>&hArr;  (F &or; &not; S &or; F &or; &not; H)</td><td>[idempotent, commutativity]</td></tr>
+<tr><td></td><td>&hArr;  (S &rArr; F) &or; (H &rArr; F)</td><td>[implication]</td></tr>
+</table>
+</blockquote>
+<p>
+<li> ( Smoke &rArr; Fire ) &rArr; (( Smoke &and; Heat ) &rArr; Fire )
+<blockquote>
+Valid<br>
+<table>
+<tr><td>( S &rArr; F )</td><td>&hArr; ( F &or; &not; S )</td><td>[implication]</td></tr>
+<tr><td></td><td>&rArr; ( F &or; &not; S &or; &not; H )</td><td>[generalization]</td></tr>
+<tr><td></td><td>&rArr; ( F &or; &not; ( S &and; H ))</td><td>[de Morgan]</td></tr>
+<tr><td></td><td>&rArr; (( S &and; H ) &rArr; F )</td><td>[conditional]</td></tr>
+</table>
+</blockquote>
+<p>
+
+<li> Big &or; Dumb &or; ( Big &rArr; Dumb )
+<p>
+<blockquote>
+Valid<br>
+<table>
+<tr><td>Big &or; Dumb &or; ( Big &rArr; Dumb )</td><td>&hArr; Big &or; Dumb &or; Dumb &or; &not; Big</td><td>[implication]</td></tr>
+<tr><td></td><td>&hArr; Big &or; &not; Big &or; Dumb</td><td>[idempotent]</td></tr>
+<tr><td></td><td>&hArr; TRUE &or; Dumb</td><td>[excluded middle]</td></tr>
+<tr><td></td><td>&hArr; TRUE</td><td></td></tr>
+</td></tr>
+</table>
+</blockquote>
+<p>
+<li> ( Big &and; Dumb ) &or; &not; Dumb
+<p>
+<blockquote>
+Satisfiable
+<p>
+<table border=1>
+<tr align=center><th>Big</th><th>Dumb</th><th>(Big &and; Dumb)</th><th>(Big &and; Dumb) &or; &not; Dumb</th></tr>
+<tr align=center><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+<tr align=center><td>T</td><td>F</td><td>F</td><td>T</td></tr>
+<tr align=center><td>F</td><td>T</td><td>F</td><td>F</td></tr>
+<tr align=center><td>F</td><td>F</td><td>F</td><td>T</td></tr>
+</table>
+<p>
+Models are: {Big, Dumb}, {Big}, {}
+</blockquote>
+</ol>
+<p>
+<hr>
+<b>Activity 7.3</b> Resolution and Conjunctive Normal Form
+<hr>
+<p>
+<b>(Exercise 7.2 from R &amp; N)</b>
+<p>
+Consider the following Knowledge Base of facts:
+<p>
+<blockquote>
+If the unicorn in mythical, then it is immortal,
+but if it is not mythical, then it is mortal and a mammal.
+If the unicorn in either immortal or a mammal, then it is horned.
+The unicorn is magical if it is horned.
+</blockquote>
+
+<ol type="1">
+
+<li> Translate the above statements into Propositional Logic.
+
+<blockquote>
+&nbsp; Myth &rArr; &not; Mortal<br>
+&not;Myth &rArr; ( Mortal &and; Mammal )<br>
+&not;Mortal &or; Mammal &rArr; Horned<br>
+&nbsp; Horned &rArr; Magic
+</blockquote>
+<p>
+<li> Convert this Knowledge Base into Conjunctive Normal Form.
+<p>
+(&not;Myth &or; &not; Mortal) &and;
+(Myth &or; Mortal) &and; (Myth &or; Mammal) &and;
+(Mortal &or; Horned) &and;
+(&not;Mammal &or; Horned) &and;
+(&not;Horned &or; Magic)
+<p>
+<li>Use a series of resolutions to prove that the unicorn is Horned.
+<p>
+Using Proof by Contradiction,
+we add to the database the negative of what we are trying to prove:
+<p>
+&not;Horned
+<p>
+We then try to derive the "empty clause" by a series of Resolutions:
+<p>
+<u>&not;Horned &and; (Mortal &or; Horned)</u><br>
+&nbsp;&nbsp; Mortal
+<p>
+<u>&not;Horned &and; (&not;Mammal &or; Horned)</u><br>
+&nbsp;&nbsp; &not;Mammal
+<p>
+<u>Mortal &and; (&not;Myth &or; &not;Mortal)</u><br>
+&nbsp;&nbsp; &not;Myth
+<p>
+<u>&not;Myth &and; (Myth &or; Mammal)</u><br>
+&nbsp;&nbsp; Mammal
+<p>
+<u>Mammal &and; &not;Mammal</u><br>
+<p>
+Having derived the empty clause, the proof (of Horned) is complete.
+<p>
+
+<li> Give all models that satisfy the Knowledge Base. Can you prove that the unicorn is Mythical? How about Magical?
+<p>
+Because of the rule (Horned &rArr; Magic), Magic must also be True.
+<p>
+We can construct a truth table for the remaining three variables:
+<p>
+<table border=1>
+<tr><th>Myth</th><th>Mortal</th><th>Mammal</th><th>Myth &rArr; &not; Mortal</th>
+<th>&not; Myth &rArr; (Mortal &and; Mammal)</th><th>&nbsp;KB&nbsp;</th></tr>
+<tr align=center><td>T</td><td>T</td><td>T</td><td>F</td><td>T</td><td>F</td></tr>
+<tr align=center><td>T</td><td>T</td><td>F</td><td>F</td><td>T</td><td>F</td></tr>
+<tr align=center><td>T</td><td>F</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+<tr align=center><td>T</td><td>F</td><td>F</td><td>T</td><td>T</td><td>T</td></tr>
+<tr align=center><td>F</td><td>T</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+<tr align=center><td>F</td><td>T</td><td>F</td><td>T</td><td>F</td><td>F</td></tr>
+<tr align=center><td>F</td><td>F</td><td>T</td><td>T</td><td>F</td><td>F</td></tr>
+<tr align=center><td>F</td><td>F</td><td>F</td><td>T</td><td>F</td><td>F</td></tr>
+</table>
+<p>
+There are three models which satisfy the entire Knowledge Base:<p>
+{Horned, Magic, Myth, Mammal}, {Horned, Magic, Myth}, {Horned, Magic, Mortal, Mammal}<p>
+(Note: each model is described by listing which variables are True)<p>
+We cannot prove that the unicorn is Mythical, because of the third model
+where Mythical is False.
+</ol>
+<p>
+<hr>
+<b>Activity 7.4</b> Sentences in First Order Logic
+<hr>
+<p>
+Represent the following sentences in first-order logic,
+using a consistent vocabulary.
+<p>
+<ol type=a>
+<li> Some students studied French in 2016.
+<p>
+<blockquote>
+<em>&exist; x Student(x) &and; Study(x,French,2016)</em>
+</blockquote>
+<p>
+
+<li> Only one student studied Greek in 2015.
+<p>
+<blockquote>
+<em>&exist;x Study(x,Greek,2015) &and;
+&forall;y (Study(y,Greek,2015) &rArr; y = x )</em>
+<p>
+sometimes written as
+<p>
+&exist;!<em>x Study(x,Greek,2015)</em>
+</blockquote>
+<p>
+
+<li> The highest score in Greek is always higher than the highest
+score in French.
+<p>
+<blockquote>
+<em>&forall;t &exist;x &forall;y
+Score(x,Greek,t) > Score(y,French,t)</em>
+</blockquote>
+<p>
+
+<li> Every person who buys a policy is smart.
+<p>
+<blockquote>
+<em>&forall;x,p Person(x) &and; Policy(p) &and; Buy(x,p)
+&rArr; Smart(x)</em>
+</blockquote>
+<p>
+
+<li> No person buys an expensive policy.
+<p>
+<blockquote>
+<em>&not;&exist;x,p Person(x) &and; Policy(p)
+&and; Expensive(p) &and; Buy(x,p)</em>
+</blockquote>
+<p>
+
+<li> There is a barber who shaves all men in town who do
+not shave themselves.
+<p>
+<blockquote>
+<em>&exist;b Barber(b) &and; &forall;m (Man(m) &and; InTown(m)
+&and; &not;Shave(m,m) &rArr; Shave(b,m))</em>
+</blockquote>
+<p>
+
+<li> Politicians can fool some of the people all of the time,
+and they can fool all of the people some of the time,
+but they can't fool all of the people all of the time.
+<p>
+<blockquote>
+<em>&forall;p ( Politician(p) &rArr;
+((&exist;x&forall;t Fool(p,x,t)) &and;
+(&exist;t&forall;x Fool(p,x,t)) &and;
+(&not;&forall;x&forall;t Fool(p,x,t))))</em>
+</blockquote>
+</ol>
+<p>
+<hr>
+<b>Activity 7.5</b> The Interplanetary Visitor
+<hr>
+<p>
+On a certain planet there are 100 highly intelligent but also
+highly religious inhabitants who all know and see each other
+on a daily basis.
+Some number <em>n</em> of them have blue eyes, the rest have brown eyes.
+The religious laws of the planet dictate that anybody
+who is able to prove that their own eyes must be blue
+has to ritually commit suicide the same evening, at midnight.
+Everybody knows that everybody else will obey this law
+without question.
+For this reason, it has become forbidden on the planet
+to discuss eye colour, and all mirrors, cameras and
+other such devices have long since been destroyed.
+One day a visitor comes from a neighboring planet
+whose inhabitants are known to always speak the truth.
+Everyone has gathered for his departure.
+Just before closing the door of his spaceship,
+he says in a voice loud enough for everyone to hear:
+"At least one of you has blue eyes."
+What will happen in the days (and nights) that follow?<br>
+(Hint: consider first the case <em>n</em>=1, then <em>n</em>=2,
+<em>n</em>=3, etc.)
+<p>
+<blockquote>
+First consider the case where there is only one inhabitant with blue eyes.
+When he looks around and sees that everyone else has brown eyes,
+he will conclude that he must have blue eyes and therefore
+commit suicide at midnight on the day of the visitor's departure.
+<p>
+If two inhabitants have blue eyes, each of them will see one
+other person with blue eyes. Seeing the other person still alive
+the next day, each of them will conclude that they must have
+blue eyes as well, so they will both commit suicide
+at midnight on the second day.
+We can proceed inductively to conclude that,
+if <em>n</em> inhabitants have blue eyes, all of them will
+commit suicide at midnight on the <em>n</em><sup>th</sup> day.
+<p>
+This result is somewhat surprising because,
+in the case where more than two inhabitants have blue eyes,
+everyone already knew that there was at least one inhabitant
+with blue eyes, and everyone knew that everyone else knew it;
+so it may at first appear that the visitor is not providing
+any new information. But this is not the case.
+For example, if exactly three inhabitants A, B and C
+had blue eyes, then B knew that C knew that somebody had blue eyes,
+but A didn't know that B knew that C knew that somebody had blue eyes.
+So there is always some new information provided by the visitor.
+</blockquote>
+<p>
+
+<hr align=left>
+</body>
+</html>
+

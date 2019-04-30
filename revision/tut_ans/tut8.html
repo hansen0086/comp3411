@@ -1,0 +1,341 @@
+<HTML>
+<HEAD>
+  <TITLE>COMP3411 Tutorial Solutions Week 8</TITLE>
+</HEAD>
+<style><!-- A {text-decoration:none} --></style>
+<BODY ALINK="#660000" VLINK="#000066" LINK="#800066" BGCOLOR="#ffffff">
+
+<H2><P><CENTER><B><FONT COLOR="#000066">
+COMP3411/9414 Artificial Intelligence<br>
+Session 1, 2019</FONT></B></CENTER></P></H2>
+
+<H2><P><CENTER><B>Tutorial Solutions - Week 8</B></CENTER></P></H2>
+
+<P><B><FONT SIZE=-1>
+<SCRIPT LANGUAGE="JavaScript">
+document.write("This page was last updated: " +
+document.lastModified);
+</SCRIPT>
+</FONT>
+</B>
+</P>
+
+<hr align=left>
+
+<b>Activity 8.1</b> Decision Trees
+<hr>
+Consider the task of predicting
+whether children are likely to be hired to play
+members of the Von Trapp Family in a production of The Sound of Music,
+based on these data:
+<p>
+<table border=1>
+<tr><th>height</th><th>hair</th><th>eyes</th><th>hired</th></tr>
+<tr><td>short</td><td>blond&nbsp;</td><td>blue</td><td align=center>+</td></tr>
+<tr><td>tall</td><td>red</td><td>blue</td><td align=center>+</td></tr>
+<tr><td>tall</td><td>blond</td><td>blue</td><td align=center>+</td></tr>
+<tr><td>tall</td><td>blond</td><td>brown&nbsp;</td><td align=center>&ndash;</td></tr>
+<tr><td>short</td><td>dark</td><td>blue</td><td align=center>&ndash;</td></tr>
+<tr><td>tall</td><td>dark</td><td>blue</td><td align=center>&ndash;</td></tr>
+<tr><td>tall</td><td>dark</td><td>brown</td><td align=center>&ndash;</td></tr>
+<tr><td>short</td><td>blond</td><td>brown</td><td align=center>&ndash;</td></tr>
+</table>
+<p>
+<ol type=a>
+<li> Compute the information (entropy) gain for each of the three attributes
+(height, hair, eyes) 
+in terms of classifying objects as belonging to the class, + or &ndash; .<br>
+<p>
+<blockquote>
+There are 3 objects in class '+' and 5 in '-', so the entropy is:
+<p>
+Entropy(parent) = &Sigma;<sub>i</sub> P<sub>i</sub> log<sub>2</sub>P<sub>i</sub>
+= -(3/8)log(3/8) - (5/8)log(5/8) = 0.954
+<p>
+Suppose we split on height:
+<p>
+<img src="wk8_split.jpg">
+<p>
+Of the 3 'short' items, 1 is '+' and 2 are '-',
+so Entropy(short) = -(1/3)log(1/3) - (2/3)log(2/3) = 0.918
+<p>
+Of the 5 'tall' items, 2 are '+' and 3 are '-',
+so Entropy(tall) = -(2/5)log(2/5) - (3/5)log(3/5) = 0.971
+<p>
+The average entropy after splitting on 'height' is
+Entropy(height) = (3/8)(0.918) + (5/8)(0.971) = 0.951
+<p>
+The information gained by testing this attribute is: 0.954 - 0.951 = 0.003
+(i.e. very little)
+<p>
+If we try splitting on 'hair' we find
+that the branch for 'dark' has 3 items, all '-' and the branch
+for
+'red' has 1 item, in '+'. Thus, these branches require no further
+information
+to make a decision. The branch for 'blond' has 2 '+' and 2 '-'
+items and so requires 1 bit. That is,
+<p>
+Entropy(hair) = (3/8)(0) + (1/8)(0) + (4/8)(1) = 0.5
+<p>
+and the information gained by testing hair is 0.954 - 0.5 = 0.454 bits.
+<p>
+By a similar calculation, the entropy for testing 'eyes' is
+(5/8)(0.971) + (3/8)(0) = 0.607,
+so the information gained is 0.954 - 0.607 = 0.347 bits.
+<p>
+Thus 'hair' gives us the maximum information gain.
+</blockquote>
+<p>
+<li> Construct a decision tree based on the minimum entropy principle.
+<blockquote>
+Since the 'blond' branch for hair still contains a mixed
+population,
+we need to apply the procedure recursively to these four items.
+Note that we now only need to test 'height' and
+'eyes' since the 'hair' attribute has already been used.
+If we split on 'height', the branch for 'tall' and 'short' will each
+contain one '+' and one '-', so the entropy gain is zero.
+If we split on 'eyes', the 'blue' brach contains two '+'s and the
+'brown' branch two '-'s, so the tree is complete:
+<p>
+<img src="wk8_tree.jpg">
+</blockquote>
+
+</ol>
+
+<p>
+<hr>
+<b>Activity 8.2</b> Laplace Pruning
+<hr>
+<p>
+The Laplace error estimate for pruning a node in a Decision Tree
+is given by:<br>
+<blockquote>
+<img src="wk8_eqn.jpg">
+</blockquote>
+where <em>N</em> is the total number of items,
+<em>n</em> is the
+number of items in the majority class and <em>k</em>
+is the number of classes.
+Given the following subtree, should the children be pruned or not?
+Show your calculations.</p>
+
+<blockquote>
+<img src="wk8_prune.jpg">
+<p>
+Error(Parent) = 1 - (7+1)/(11+2) = 1 - 8/13 = 5/13 = 0.385
+<p>
+Error(Left)&nbsp;&nbsp;&nbsp; = 1 - (2+1)/(3+2) = 1 - 3/5 = 2/5 = 0.4
+<p>
+Error(Right)&nbsp; = 1 - (6+1)/(8+2) = 1 - 7/10 = 3/10 = 0.3
+<p>
+Backed Up Error = (3/11)*(0.4) + (8/11)*(0.3) = 0.327 < 0.385
+<p>
+Since Error of Parent is larger than Backed Up Error &rArr; Don't Prune
+</blockquote>
+
+<p>
+<hr>
+<b>Activity 8.3</b> Perceptron Learning
+<hr>
+<p>
+
+<ol type="1">
+<li> Construct by hand a Perceptron which correctly classifies
+the following data; use your knowledge of plane geometry
+to choose appropriate values for the weights
+<em>w<sub>0</sub></em>,
+<em>w<sub>1</sub></em> and
+<em>w<sub>2</sub></em>.
+<p>
+<table border="1">
+<tr>
+<td>Training Example</td><td><em>x<sub>1</sub></em></td>
+<td>x<sub>2</sub></td><td>Class</td>
+<tr align="center"><td>a.</td><td>0</td><td>1</td><td>-1</td></tr>
+<tr align="center"><td>b.</td><td>2</td><td>0</td><td>-1</td></tr>
+<tr align="center"><td>c.</td><td>1</td><td>1</td><td>+1</td></tr>
+</tr>
+</table>
+<p>
+The first step is to plot the data on a 2-D graph,
+and draw a line which separates the positive from the
+negative data points:
+<p>
+<img src="./wk8_per1.jpg">
+<p>
+This line has slope -1/2 and x<sub>2</sub>-intersect 5/4,
+so its equation is:
+<p>
+x<sub>2</sub> = 5/4 - x<sub>1</sub>/2,<br>
+i.e. 2x<sub>1</sub> + 4x<sub>2</sub> - 5 = 0.
+<p>
+Taking account of which side is positive, this corresponds
+to these weights:
+<p>
+w<sub>0</sub> = - 5<br>
+w<sub>1</sub> = 2<br>
+w<sub>2</sub> = 4
+<p>
+Alternatively, we can  derive weights w<sub>1</sub>=1 and w<sub>2</sub>=2
+by drawing a vector normal to the separating line,
+in the direction pointing towards the positive data points:
+<p>
+<img src="./wk8_per2.jpg">
+<p>
+The bias weight w<sub>0</sub> can then be found
+by computing the dot product of the normal vector
+with a perpendicular vector from the separating line to the origin.
+In this case w<sub>0</sub> = 1(-0.5) + 2(-1) = -2.5
+<p>
+(Note: these weights differ from the previous ones by a normalizing
+constant, which is fine for a Perceptron)
+<p>
+
+<li>
+Demonstrate the Perceptron Learning Algorithm
+on the above data, using a learning rate of 1.0
+and initial weight values of
+<p>
+<em>w<sub>0</sub></em> = - 0.5<br>
+<em>w<sub>1</sub></em> = 0<br>
+<em>w<sub>2</sub></em> = 1
+<p>
+In your answer, you should clearly indicate
+the new weight values at the end of each training step.
+</ol>
+<p>
+<table border="1">
+<tr><td>Iteration</td>
+<td>w<sub>0</sub></td><td>w<sub>1</sub></td><td>w<sub>2</sub></td>
+<td>Training Example</td>
+<td>x<sub>1</sub></td><td>x<sub>2</sub></td><td>Class</td>
+<td>s=w<sub>0</sub>+w<sub>1</sub>x<sub>1</sub>+w<sub>2</sub>x<sub>2</sub></td>
+<td>Action</td></td>
+
+<tr align="center"><td>1</td><td>-0.5</td><td>0</td><td>1</td>
+<td>a.</td><td>0</td><td>1</td><td>-</td>
+<td>+0.5</td><td>Subtract</td></tr>
+<tr align="center"><td>2</td><td>-1.5</td><td>0</td><td>0</td>
+<td>b.</td><td>2</td><td>0</td><td>-</td>
+<td>-1.5</td><td>None</td></tr>
+<tr align="center"><td>3</td><td>-1.5</td><td>0</td><td>0</td>
+<td>c.</td><td>1</td><td>1</td><td>+</td>
+<td>-1.5</td><td>Add</td></tr>
+
+<tr align="center"><td>4</td><td>-0.5</td><td>1</td><td>1</td>
+<td>a.</td><td>0</td><td>1</td><td>-</td>
+<td>+0.5</td><td>Subtract</td></tr>
+<tr align="center"><td>5</td><td>-1.5</td><td>1</td><td>0</td>
+<td>b.</td><td>2</td><td>0</td><td>-</td>
+<td>+0.5</td><td>Subtract</td></tr>
+<tr align="center"><td>6</td><td>-2.5</td><td>-1</td><td>0</td>
+<td>c.</td><td>1</td><td>1</td><td>+</td>
+<td>-3.5</td><td>Add</td></tr>
+
+<tr align="center"><td>7</td><td>-1.5</td><td>0</td><td>1</td>
+<td>a.</td><td>0</td><td>1</td><td>-</td>
+<td>-0.5</td><td>None</td></tr>
+<tr align="center"><td>8</td><td>-1.5</td><td>0</td><td>1</td>
+<td>b.</td><td>2</td><td>0</td><td>-</td>
+<td>-1.5</td><td>None</td></tr>
+<tr align="center"><td>9</td><td>-1.5</td><td>0</td><td>1</td>
+<td>c.</td><td>1</td><td>1</td><td>+</td>
+<td>-0.5</td><td>Add</td></tr>
+
+<tr align="center"><td>10</td><td>-0.5</td><td>1</td><td>2</td>
+<td>a.</td><td>0</td><td>1</td><td>-</td>
+<td>+1.5</td><td>Subtract</td></tr>
+<tr align="center"><td>11</td><td>-1.5</td><td>1</td><td>1</td>
+<td>b.</td><td>2</td><td>0</td><td>-</td>
+<td>+0.5</td><td>Subtract</td></tr>
+<tr align="center"><td>12</td><td>-2.5</td><td>-1</td><td>1</td>
+<td>c.</td><td>1</td><td>1</td><td>+</td>
+<td>-2.5</td><td>Add</td></tr>
+
+<tr align="center"><td>13</td><td>-1.5</td><td>0</td><td>2</td>
+<td>a.</td><td>0</td><td>1</td><td>-</td>
+<td>+0.5</td><td>Subtract</td></tr>
+<tr align="center"><td>14</td><td>-2.5</td><td>0</td><td>1</td>
+<td>b.</td><td>2</td><td>0</td><td>-</td>
+<td>-2.5</td><td>None</td></tr>
+<tr align="center"><td>15</td><td>-2.5</td><td>0</td><td>1</td>
+<td>c.</td><td>1</td><td>1</td><td>+</td>
+<td>-1.5</td><td>Add</td></tr>
+
+<tr align="center"><td>16</td><td>-1.5</td><td>1</td><td>2</td>
+<td>a.</td><td>0</td><td>1</td><td>-</td>
+<td>+0.5</td><td>Subtract</td></tr>
+<tr align="center"><td>17</td><td>-2.5</td><td>1</td><td>1</td>
+<td>b.</td><td>2</td><td>0</td><td>-</td>
+<td>-0.5</td><td>None</td></tr>
+<tr align="center"><td>18</td><td>-2.5</td><td>1</td><td>1</td>
+<td>c.</td><td>1</td><td>1</td><td>+</td>
+<td>-0.5</td><td>Add</td></tr>
+
+<tr align="center"><td>19</td><td>-1.5</td><td>2</td><td>2</td>
+<td>a.</td><td>0</td><td>1</td><td>-</td>
+<td>+0.5</td><td>Subtract</td></tr>
+<tr align="center"><td>20</td><td>-2.5</td><td>2</td><td>1</td>
+<td>b.</td><td>2</td><td>0</td><td>-</td>
+<td>+1.5</td><td>Subtract</td></tr>
+<tr align="center"><td>21</td><td>-3.5</td><td>0</td><td>1</td>
+<td>c.</td><td>1</td><td>1</td><td>+</td>
+<td>-2.5</td><td>Add</td></tr>
+
+<tr align="center"><td>22</td><td>-2.5</td><td>1</td><td>2</td>
+<td>a.</td><td>0</td><td>1</td><td>-</td>
+<td>-0.5</td><td>None</td></tr>
+<tr align="center"><td>23</td><td>-2.5</td><td>1</td><td>2</td>
+<td>b.</td><td>2</td><td>0</td><td>-</td>
+<td>-0.5</td><td>None</td></tr>
+<tr align="center"><td>24</td><td>-2.5</td><td>1</td><td>2</td>
+<td>c.</td><td>1</td><td>1</td><td>+</td>
+<td>+0.5</td><td>None</td></tr>
+</table>
+
+<hr align=left>
+<b>Activity 9.1</b> Multi-Layer Neural Networks to Compute Logical Functions
+<hr>
+<p>
+Explain how each of the following could be constructed:
+<p>
+<ol type=1>
+<li> Perceptron to compute the OR function of <em>m</em> inputs
+<p>
+Set the bias weight to -&frac12;, all other weights to 1.
+  <p>
+The OR function is almost always True. The only way it can be False is if
+all inputs are 0. Therefore, we set the bias to be slightly less than zero for this input.
+<p>
+<li> Perceptron to compute the AND function of <em>n</em> inputs
+<p>
+  Set the bias weight to (&frac12; - <em>n</em>), all other weights to 1.
+  <p>
+The AND function is almost always False. The only way it can be True is if
+all inputs are 1. Therefore, we set the bias so that,
+when all inputs are 1, the combined sum is slightly greater than 0.
+<p>
+<li> 2-Layer Neural Network
+to compute any (given) logical expression, assuming it is written in
+<a href="http://en.wikipedia.org/wiki/Conjunctive_normal_form">Conjunctive Normal Form</a>.
+<p>
+Each hidden node should compute one disjunctive term
+in the expression. The weights should be -1 for items that
+are negated, +1 for the others. The bias should be
+(<em>k</em> - &frac12;) where <em>k</em> is the number of items
+that are negated. The output node then computes the conjunction
+of all the hidden nodes, as in part 2.
+<p>
+For example, here is a network that computes
+(A &or; B) &and; (&not B &or; C &or; &not; D) &and; (D &or; &not; E)
+<p>
+<img src="./wk8_nn_logic.jpg">
+</ol>
+<p>
+
+<hr align=left>
+</body>
+</html>
+

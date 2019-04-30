@@ -1,0 +1,246 @@
+<HTML>
+<HEAD>
+  <TITLE>COMP3411/9414 Tutorial Solutions Week 6</TITLE>
+</HEAD>
+<style><!-- A {text-decoration:none} --></style>
+<BODY ALINK="#660000" VLINK="#000066" LINK="#800066" BGCOLOR="#ffffff">
+
+<H2><P><CENTER><B><FONT COLOR="#000066">
+COMP3411/9414 Artificial Intelligence<br>
+Session 1, 2019</FONT></B></CENTER></P></H2>
+
+<H2><P><CENTER><B>Tutorial Solutions - Week 6</B></CENTER></P></H2>
+
+<P><B><FONT SIZE=-1>
+<SCRIPT LANGUAGE="JavaScript">
+document.write("This page was last updated: " +
+document.lastModified);
+</SCRIPT>
+</FONT>
+</B>
+</P>
+
+<hr align=left>
+
+<b>Activity 6.1</b> Cryptarithmetic
+<hr>
+<p>
+Solve the famous Cryptarithmetic puzzle
+<p>
+<table>
+<tr><td></td><td>S</td><td>E</td><td>N</td><td>D</td><td>+</td></tr>
+<tr><td></td><td>M</td><td>O</td><td>R</td><td>E</td><td></td></tr>
+<tr><td colspan=6><hr></td></tr>
+<tr><td>M</td><td>O</td><td>N</td><td>E</td><td>Y</td><td></td></tr>
+</table>
+<p>
+What heuristics and strategies did you use along the way?
+<p>
+The sum of two 4-digit numbers cannot exceed 1998, so M=1.<br>
+10+O = S+1 or S+1+1, i.e. S = O+9 or O+8, but 1 has already been used, so O=0.<br>
+Therefore S=9, because there is no possibility of a carry from E+O.<br>
+We then have E+1 = N and 10+E = N+R or N+R+1, so R = 8 or 9,
+but 9 has already been assigned, so R=8.<br>
+(Note how Minimum Remaining Values has been used at each step.)<br>
+The puzzle now looks like this:
+<p>
+<table>
+<tr><td></td><td>9</td><td>E</td><td>N</td><td>D</td><td>+</td></tr>
+<tr><td></td><td>1</td><td>0</td><td>8</td><td>E</td><td></td></tr>
+<tr><td colspan=6><hr></td></tr>
+<tr><td>1</td><td>0</td><td>N</td><td>E</td><td>Y</td><td></td></tr>
+</table>
+<p>
+This gives us the two constraints:<br>
+E+1 = N<br>
+D+E = 10+Y
+<p>
+The remaining values are 2,3,4,5,6,7.
+<p>
+We have D+E <= 6+7 = 13, so Y = 2 or 3. (Note: MRV again).<br>
+But if Y=3 (Most Constraining Value) then all three variables D,E,N would
+need to take values 6 or 7, which is impossible (Constraint Propagation).<br>
+Therefore Y=2, E=5, N=6 and D=7.
+<p>
+<hr>
+<b>Activity 6.2</b> Forward Checking and Arc Consistency
+<hr>
+<p>
+Use Forward Checking to show that the Australia map-colouring problem
+has no solution when we assign WA=green, V=Red, NT=Red. If we apply
+Arc Consistency as well, can the inevitable failure be detected
+further up the tree?
+<p>
+<table border=1>
+<tr align=center><td></td><td>WA</td><td>NT</td><td>Q</td><td>NSW</td><td>V</td><td>SA</td><td>T</td></tr>
+<tr><td>initial domains</td><td>R G B</td><td>R G B</td><td>R G B</td><td>R G B</td><td>R G B</td><td>R G B</td><td>R G B</td></tr>
+<tr align=center><td> &nbsp; WA=Green</td><td> G </td><td>R &nbsp; B</td><td>R G B</td><td>R G B</td><td>R G B</td><td> R &nbsp;&nbsp; B </td><td>R G B</td></tr>
+<tr align=center><td> &nbsp; V = Red &nbsp; </td><td> G </td><td> R &nbsp;&nbsp; B </td><td>R G B</td><td> &nbsp;&nbsp; G B</td><td>R &nbsp;&nbsp;&nbsp;&nbsp; </td><td> &nbsp;&nbsp;&nbsp;&nbsp; B </td><td>R G B</td></tr>
+<tr align=center><td> &nbsp; NT = Red &nbsp; </td><td> G </td><td> R &nbsp;&nbsp;&nbsp;&nbsp; </td><td> &nbsp;&nbsp; G B</td>
+<td> &nbsp;&nbsp; G B</td><td>R &nbsp;&nbsp;&nbsp;&nbsp; </td><td> &nbsp;&nbsp;&nbsp;&nbsp; B</td><td>R G B</td></tr>
+<tr align=center><td> &nbsp; SA = Blue &nbsp; </td><td> G </td><td> R &nbsp;&nbsp;&nbsp;&nbsp; </td>
+<td> &nbsp;&nbsp; G &nbsp;&nbsp; </td><td> &nbsp;&nbsp; G &nbsp;&nbsp; </td>
+<td>R &nbsp;&nbsp;&nbsp;&nbsp; </td><td> &nbsp;&nbsp;&nbsp;&nbsp; B</td><td>R G B</td></tr>
+<tr align=center><td> &nbsp; Q = Green &nbsp; </td><td> G </td><td> R &nbsp;&nbsp;&nbsp;&nbsp; </td>
+<td> &nbsp;&nbsp; G &nbsp;&nbsp; </td><td>&nbsp;</td>
+<td>R &nbsp;&nbsp;&nbsp;&nbsp; </td><td> &nbsp;&nbsp;&nbsp;&nbsp; B</td><td>R G B</td></tr>
+</table>
+<p>
+No options remain for NSW, so there is no solution.
+<p>
+If we also apply Arc Consistency, the question can be resolved further up the tree
+(but with extra computation at each node) as follows:
+<p>
+<table border=1>
+<tr align=center><td></td><td>WA</td><td>NT</td><td>Q</td><td>NSW</td><td>V</td><td>SA</td><td>T</td></tr>
+<tr align=center><td>initial domains</td><td>R G B</td><td>R G B</td><td>R G B</td><td>R G B</td><td>R G B</td><td>R G B</td><td>R G B</td></tr>
+<tr align=center><td> &nbsp; WA=Green</td><td> G </td><td>R &nbsp; B</td><td>R G B</td><td>R G B</td><td>R G B</td><td> R &nbsp;&nbsp; B </td><td>R G B</td></tr>
+<tr align=center><td> &nbsp; V = Red &nbsp; </td><td> G </td><td>R &nbsp;&nbsp; B</td><td>R G B</td><td> &nbsp;&nbsp; G B</td><td>R &nbsp;&nbsp;&nbsp;&nbsp; </td><td> &nbsp;&nbsp;&nbsp;&nbsp; B</td><td>R G B</td></tr>
+<tr align=center><td>NT&rarr;SA, Q&rarr;SA, NSW&rarr;SA</td><td> G </td><td>R &nbsp;&nbsp;&nbsp;&nbsp; </td><td>R G &nbsp;&nbsp; </td><td> &nbsp;&nbsp; G &nbsp;&nbsp; </td><td>R &nbsp;&nbsp;&nbsp;&nbsp; </td><td> &nbsp;&nbsp;&nbsp;&nbsp; B</td><td>R G B</td></tr>
+<tr align=center><td>&nbsp;Q &rarr; NT&nbsp</td><td> G </td><td>R &nbsp;&nbsp;&nbsp;&nbsp; </td><td> &nbsp;&nbsp; G &nbsp;&nbsp; </td><td> &nbsp;&nbsp; G &nbsp;&nbsp; </td><td>R &nbsp;&nbsp;&nbsp;&nbsp; </td><td> &nbsp;&nbsp;&nbsp;&nbsp; B</td><td>R G B</td></tr>
+<tr align=center><td>&nbsp;Q &rarr; NSW&nbsp</td><td> G </td><td>R &nbsp;&nbsp;&nbsp;&nbsp; </td><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td> &nbsp;&nbsp; G &nbsp;&nbsp; </td><td>R &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td> &nbsp;&nbsp;&nbsp;&nbsp; B</td><td>R G B</td></tr>
+</table>
+<p>
+<hr>
+<b>Activity 6.3</b> Local Search
+<hr>
+<p>
+Consider the following state for the 8-queens problem:
+<p>
+<img src="./wk6_queens.jpg">
+<p>
+<ol type="a">
+<li>Is this a solution?
+<p>
+No, the queens on columns 2 and 5 are attacking each other.
+<p>
+
+<li>What is the value of <em>h</em>?
+<p>
+There is only one violation, so <em>h</em>=1.
+<p>
+
+<li>Explain why Hill-climbing with Min Conflicts would get stuck in this state,
+but Simulated Annealing may be able to "escape" and eventually find a solution.
+<p>
+For each column, moving the queen on that column (while keeping the other queens in place)
+would result in an increase to <em>h</em>. Therefore, any such move will be
+rejected by Hill-climbing.
+Simulated Annealing, however, can accept such a move with probability
+exp(-(h<sub>1</sub>-h<sub>0</sub>)/T),
+thus bumping the system out of this local optimum and allowing it to
+continue the search for a global optimum.<br>
+(Note: when started from a random initial state,
+Hill-climbing will get stuck 86% of the time on this problem,
+and will need to be continually re-started from a new random state
+each time, until it succeeds.)
+</ol>
+<p>
+<hr>
+<b>Activity 6.4</b> Logic Puzzle (Exercise 6.6 from R &amp; N)
+<hr>
+<p>
+Consider the following logic puzzle:
+In five houses, each with a different color, live five persons of different
+nationalities, each of whom prefers a different brand of candy,
+a different drink, and a different pet.
+Given the following facts, the questions to answer are
+"Where does the zebra live, and in which house do they drink water?".
+<p>
+<ul>
+<li>The Englishman lives in the red house.
+<li>The Spaniard owns a dog.
+<li>The Norwegian lives in the first house on the left.
+<li>The Green house is immediately to the right of the ivory house.
+<li>The man who eats Hershey bars lives in the house next to the man with the fox.
+<li>Kit Kats are eaten in the yellow house.
+<li>The Norwegian lives next to the blue house.
+<li>The Smarties eater owns snails.
+<li>The Snickers eater drinks orange juice.
+<li>The Ukranian drinks tea.
+<li>The Japanese eats Milky Ways.
+<li>Kit Kats are eaten in a house next to the house where the horse is kept.
+<li>Coffee is drunk in the green house.
+<li>Milk is drunk in the middle house.
+</ul>
+<p>
+Discuss different representations of this problem as a CSP.
+Why might we prefer one representation over another?<br>
+<b>Bonus Challenge</b>: Write a Prolog program to solve this puzzle.
+<p>
+We can arbitrarily assign a number between 1 and 5 to each
+attribute value, as follows:
+<p>
+<table>
+<tr><th>Color</th><th>Nationality</th><th>Candy</th><th>Drink</th><th>Pet</th></tr>
+<tr><td>1. Red</td><td>1. English</td><td>1. Hershey bar</td><td>1. Orange Juice</td><td>1. Dog</td><td></td></tr>
+<tr><td>2. Green</td><td>2. Spanish</td><td>2. KitKat</td><td>2. Tea</td><td>2. Fox</td><td></td></tr>
+<tr><td>3. Ivory</td><td>3. Norwegian</td><td>3. Smarties</td><td>3. Coffee</td><td>3. Snails</td><td></td></tr>
+<tr><td>4. Yellow</td><td>4. Ukranian</td><td>4. Snickers</td><td>4. Milk</td><td>4. Horse</td><td></td></tr>
+<tr><td>5. Blue</td><td>5. Japanese</td><td>5. Milky Way</td><td>5. Water</td><td>5. Zebra</td><td></td></tr>
+</table>
+<p>
+We can then construct a 5 by 5 table where the columns are attributes,
+the rows are values and the interior entries
+indicate which house has the specified value for the specified attribute.
+The constraints can then be encoded as follows:
+<p>
+<table border=1>
+<tr><th>&nbsp;</th><th>Color</th><th>Nation</th><th>Candy</th><th>Drink</th><th>Pet</th></tr>
+<tr><td>1&nbsp;</td><td>A</td><td>A</td><td>D</td><td>G</td><td>B</td></tr>
+<tr><td>2&nbsp;</td><td>C</td><td>B</td><td>E</td><td>H</td><td>D&plusmn;1</td></tr>
+<tr><td>3&nbsp;</td><td>C-1</td><td>1</td><td>F</td><td>C</td><td>F</td></tr>
+<tr><td>4&nbsp;</td><td>E</td><td>H</td><td>G</td><td>3</td><td>E&plusmn;1</td></tr>
+<tr><td>5&nbsp;</td><td>2</td><td>J</td><td>J</td><td>W</td><td>Z</td></tr>
+</table>
+<p>
+There is an additional constraint that all the numbers 1, 2, 3, 4, 5 must occur
+exactly once in each column.
+<p>
+We can deduce that E=1, and derive the following exclusions:
+
+<pre>
+     1  2  3  4  5
+  +----------------
+ A| x  x
+ B| x  x
+ C| x  x  x
+ D| x
+ E|    x  x  x  x
+ F| x  x
+ G| x     x
+ H| x     x
+ J| x
+  +----------------
+</pre>
+
+Since G, H, C cannot be 1, this implies that W=1,
+i.e. Water is drunk in the first house on the left.
+<p>
+If C=4, then A=5, G=5, H=2, so F, B, J must be chosen from
+{2, 3} and two of them must be equal (which is not allowed).<br>
+Therefore C=5, and A=3.<br>
+If H=4, G=J=2 which is not allowed.<br>
+Therefore, H=2, G=4, J=5, B=4, F=3, D=2 and Z=5,
+i.e. the Zebra is in the last house on the right.
+<p>
+An alternative representation for the problem is a table
+where the rows are the house numbers and the interior entries
+indicate the value of the specified attribute for the specified
+house. This representation is not so convenient for solving
+the problem by hand (or with an imperative language like C).
+However, it can readily be encoded in a Prolog program, as
+<a href="./wk6_zebra.txt">shown here</a>.
+<p>
+Solutions for a number of similar puzzles can be found at
+<a href="http://www.ypologist.com/mmalita17/HOMEPAGE/logic/index.html">www.ypologist.com/mmalita17/HOMEPAGE/logic</a>
+<p>
+Yet another approach is to line up the houses in order,
+and treat the constraints as pieces of a jigsaw puzzle,
+as described <a href="./wk6_zebra.pdf">here</a>.
+<p>
+
+<hr align=left>
+</body>
+</html>
+

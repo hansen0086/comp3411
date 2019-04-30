@@ -1,0 +1,160 @@
+<HTML>
+<HEAD>
+  <TITLE>COMP3411/9414 Week 2 Tutorial Solutions</TITLE>
+</HEAD>
+<style><!-- A {text-decoration:none} --></style>
+<BODY ALINK="#660000" VLINK="#000066" LINK="#800066" BGCOLOR="#ffffff">
+
+<H2><P><CENTER><B><FONT COLOR="#000066">
+COMP3411/9414 Artificial Intelligence<br>
+Session 1, 2019</FONT></B></CENTER></P></H2>
+
+<H2><P><CENTER><B>Week 2 Tutorial Solutions</B></CENTER></P></H2>
+
+<P><B><FONT SIZE=-1>
+<SCRIPT LANGUAGE="JavaScript">
+document.write("This page was last updated: " +
+document.lastModified);
+</SCRIPT>
+</FONT>
+</B>
+</P>
+
+<hr align=left>
+
+<b>Activitity 2.1:</b>  PEAS Descriptions
+<hr>
+Present to your tutorial group the PEAS model you developed for the activity from "The PEAS Model of an Agent".
+<p>
+
+<hr>
+<b>Activitity 2.2:</b> Classifying Environments &amp; Choice of Agent Type
+<hr>
+Use the PEAS model to classify an environment from the tutorial in Week 1. 
+<ol type="1">
+<li>
+Classify each task according to the properties given in lectures in the Classifying Environments page of Week 2 module. Give a one-line justification for each choice.
+<li>
+Select a suitable agent type (or, discuss the relative merits of the different agent types presented).
+</ol>
+
+<hr>
+<b>Activitity 2.4</b> Sorting in Prolog
+<hr>
+<p>
+<ol type="1">
+<li>
+Write a prolog predicate <code>insert(Num, List, NewList)</code>
+that takes a number <code>Num</code> along with a list of numbers
+<code>List</code> which is already sorted in increasing order,
+and binds <code>NewList</code> to the list obtained by inserting
+<code>Num</code> into <code>List</code> so that the resulting list
+is still sorted in increasing order.
+<pre>
+% Base Case
+insert(New,[],[New]).
+
+% New node goes at front of list
+insert(New,[Head|Tail],[New,Head|Tail]) :-
+   New =< Head.
+
+% New node is inserted into existing list
+insert(New,[Head|Tail],[Head|Tail1]) :-
+   New > Head,
+   insert(New,Tail,Tail1).
+</pre>
+
+<li>
+Write a predicate <code>isort(List,NewList)</code>
+that takes a List of numbers in any order, and binds <code>NewList</code>
+to the list containing the same numbers sorted in increasing order.
+Hint: your predicate should call the <code>insert()</code> predicate from part (1).
+<pre>
+% Base Case
+isort([],[]).
+
+% Sort the Tail and then insert the Head
+isort([Head|Tail],List) :-
+   isort(Tail,Tail_Sorted),
+   insert(Head,Tail_Sorted,List).
+</pre>
+
+<li>
+Write a predicate <code>split(BigList,List1,List2)</code>
+which takes a list <code>BigList</code> and divides the items into
+two smaller lists <code>List1</code> and <code>List2</code>,
+as evenly as possible (i.e. so that the number of items in
+<code>List1</code> and <code>List2</code> differs by no more that 1).
+Can it be done without measuring the length of the list?
+<pre>
+% Base Case 0: empty list
+split([],[],[]).
+
+% Base Case 1: list with one item
+split([A],[A],[]).
+
+% Assign first item to first list, second item to second list
+% and recursively split the rest of the list.
+split([A,B|T],[A|R],[B|S]) :-
+   split(T,R,S).
+</pre>
+
+<li>
+Write a predicate <code>merge(Sort1,Sort2,Sort)</code>
+which takes two lists <code>Sort1</code> and <code>Sort2</code>
+that are already sorted in increasing order, and binds
+<code>Sort</code> to a new list which combines the elements from
+<code>Sort1</code> and <code>Sort2</code>, and is sorted in increasing order.
+<pre>
+% If one list is empty, return the other list
+merge(A,[],A).
+merge([],B,B).
+
+% If first item of first list is smaller,
+% it becomes first item of the merged list
+merge([A|R],[B|S],[A|T]) :-
+   A =< B,
+   merge(R,[B|S],T).
+
+% If first item of second list is smaller,
+% it becomes first item of the merged list
+merge([A|R],[B|S],[B|T]) :-
+   A > B,
+   merge([A|R],S,T).
+</pre>
+
+</ol>
+
+Bonus Challenge (for students who have already studied sorting algorithms in another programming language):
+<blockquote>
+Write a predicate <code>mergesort(List,NewList)</code>
+which has the same functionality as the <code>isort()</code>
+predicate from part (2) above, but uses the MergeSort algorithm.
+Hint: you will need to use the <code>split()</code> and <code>merge()</code>
+predicates from parts (3) and (4) above.
+<pre>
+% Base Cases: empty list or list with one item
+mergesort([],[]).
+mergesort([A],[A]).
+
+% If the list has more than one item,
+% split it into two lists of (nearly) equal size,
+% sort the two smaller lists, and merge them. 
+mergesort([A,B|T],S) :-  
+   split([A,B|T],L1,L2),
+   mergesort(L1,S1),
+   mergesort(L2,S2),
+   merge(S1,S2,S).
+</pre>
+</blockquote>
+
+<p>
+
+<hr>
+
+If additional time remains in the tutorial, you can skip ahead to
+cover <b>Activity 3.1</b> from next week's tutorial questions.
+
+<hr align=left>
+</body>
+</html>

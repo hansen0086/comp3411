@@ -1,0 +1,227 @@
+<HTML>
+<HEAD>
+  <TITLE>COMP3411/9414 Tutorial Week 4</TITLE>
+</HEAD>
+<style><!-- A {text-decoration:none} --></style>
+<BODY ALINK="#660000" VLINK="#000066" LINK="#800066" BGCOLOR="#ffffff">
+
+<H2><P><CENTER><B><FONT COLOR="#000066">
+COMP3411/9414 Artificial Intelligence<br>
+Session 1, 2019</FONT></B></CENTER></P></H2>
+
+<H2><P><CENTER><B>Week 4 Tutorial Solutions</B></CENTER></P></H2>
+
+<P><B><FONT SIZE=-1>
+<SCRIPT LANGUAGE="JavaScript">
+document.write("This page was last updated: " +
+document.lastModified);
+</SCRIPT>
+</FONT>
+</B>
+</P>
+
+<hr align=left>
+
+<b>Activitity 4.1</b> Path Search Algorithms on a Graph
+<hr>
+Consider the task of finding a path from start state S to goal state G,
+given the distances and heuristic values in this diagram:
+<blockquote>
+<img src="./wk4_searchgraph.jpg" width="512">
+</blockquote>
+For each of the following strategies, list the order in which the states are expanded.
+Whenever there is a choice of states, you should select the one that comes
+first in alphabetical order.
+In each case, you should skip any states that have previously been expanded,
+and you should continue the search until the goal node is expanded.
+
+<ol type="a">
+<li> Breadth First Search
+<blockquote>
+S, A, C, B, D, T, U, X, V, W, Y, Z, E, F, G
+</blockquote>
+<li> Depth First Search
+<blockquote>
+S, A, B, T, D, C, U, W, E, F, G
+</blockquote>
+<li> Uniform Cost Search [Hint: first compute g() for each state in the graph]
+<blockquote>
+S(0), A(2), C(3), B(4), D(5), U(6), X(7), T(8), V(9), W(10), Y(11), F(12), Z(13), E(14), G(15)
+</blockquote>
+<li> Greedy Search, using the heuristic shown
+<blockquote>
+S, C, X, Z, G
+</blockquote>
+<li> A*Search, using the heuristic shown
+<blockquote>
+S(9), C(10), A(11), B(11), D(12), X(12), W(12), U(13), Z(14), F(15), G(15) 
+<p>
+Note that g(X) becomes 8 after C is expanded, but drops to 7 after D is expanded.
+Similarly, g(G) becomes 16 when Z is expanded, but drops to 15 after F is expanded.
+</blockquote>
+</ol>
+
+<hr>
+<b>Activitity 4.2</b> A*Search for the 8-Puzzle
+<hr>
+Consider the following arrangement of tiles in the 8-puzzle:
+<p>
+<blockquote>
+<table style="border:1px solid black;">
+<tr><td></td><td>1</td><td>2</td><td>3</td><td></td></tr>
+<tr><td></td><td>8</td><td>5</td><td></td><td></td></tr>
+<tr><td></td><td>4</td><td>7</td><td>6</td><td></td></tr>
+</table>
+</blockquote>
+<p>
+Keeping in mind that the goal state is:
+<p>
+<blockquote>
+<table style="border:1px solid black;">
+<tr><td></td><td>1</td><td>2</td><td>3</td><td></td></tr>
+<tr><td></td><td>4</td><td>5</td><td>6</td><td></td></tr>
+<tr><td></td><td>7</td><td>8</td><td></td><td></td></tr>
+</table>
+</blockquote>
+<p>
+Trace the A<sup>*</sup>Search algorithm using the
+Total Manhattan Distance heuristic, to find the shortest path from the
+initial state shown above, to the goal state.
+<blockquote>
+<img src="./wk4_astar.jpg">
+<p>
+Note: The algorithm begins by exploring the left branch which,
+according to the heuristic, seems the most promising.
+After a few steps the heuristic for the left branch
+starts to exceed that of middle branch, 
+so exploration shifts to the middle branch,
+where the optimal solution is ultimately found.
+</blockquote>
+
+<hr>
+<b>Activitity 4.3</b> Relationships Between Search Strategies
+<hr>
+Prove each of the following statements, or give a counterexample:
+<p>
+<ol type=a>
+<li> Breadth First Search is a special case of Uniform Cost Search
+<blockquote>
+Uniform Cost Search reduces to Breadth First Search
+when all edges have the same cost.
+</blockquote>
+<li> Breadth First Search, Depth First Search and Uniform Cost Search
+are special cases of best-first search.
+<blockquote>
+best-first search reduces to Breadth-First Search when
+<em>f(n)</em>=number of edges from start node to <em>n</em>,
+to UCS when <em>f(n)</em>=<em>g(n)</em>;<br>
+it can be reduced to DFS by, for example, setting
+<em>f(n)</em>=-(number of nodes from start state to <em>n</em>)
+(thus forcing deep nodes on the
+current branch to be searched before shallow nodes on other branches).
+Another way to produce DFS is to set <em>f(n)</em>=-<em>g(n)</em> 
+(but this might produce a particularly bad choice of nodes
+within the DFS framework - for example, try tracing the order in which nodes are expanded
+when traveling from Urziceni to Craiova).
+
+</blockquote>
+<li> Uniform Cost Search is a special case of A<sup>*</sup>Search
+<blockquote>
+A<sup>*</sup>Search reduces to UCS when the heuristic function
+is zero everywhere, i.e. <em>h(n)</em>=0 for all <em>n</em>;<br>
+this heuristic is clearly admissible since it always (grossly!)
+underestimates the distance remaining to reach the goal.
+</blockquote>
+</ol>
+<p>
+
+<hr>
+<b>Activitity 4.4</b> Heuristic Path Algorithm
+<hr>
+The <b>heuristic path algorithm</b>
+is a best-first search in which the objective function is
+<blockquote>
+<em>f(n) = (2-w)g(n) + wh(n)</em>
+</blockquote>
+What kind of search does this perform when <em>w</em>=0?
+when <em>w</em>=1? when <em>w</em>=2?<br>
+<blockquote>
+This algorithm reduces to Uniform Cost Search when <em>w</em>=0,
+to A<sup>*</sup>Search when
+<em>w</em>=1 and to Greedy Search when <em>w</em>=2.
+</blockquote>
+For what values of <em>w</em> is this algorithm complete?
+For what values of <em>w</em> is it optimal,
+assuming <em>h</em>() is admissible?
+<blockquote>
+It is guaranteed to be optimal when 0 &le; <em>w</em> &le; 1,
+because it is equivalent to A<sup>*</sup>Search using the heuristic
+<p>
+<em>h</em>'(n) = [<em>w</em>/(2-<em>w</em>)]<em>h</em>(<em>n</em>) &leq; <em>h</em>(<em>n</em>)
+<p>
+When <em>w</em> &gt; 1 it is not guaranteed to be optimal
+(however, it might work very well in practice, for some problems).
+</blockquote>
+<p>
+
+<hr>
+<b>Activitity 4.5</b> Understanding Informed Search Algorithms with Mazes
+<hr>
+Discuss your findings and insights from the 'Fun with Mazes' activity. Compare your findings and discuss any discrepancies.
+<ol type="a">
+
+<li>
+Use the widget to create a maze for which Bidirectional Search would find a solution faster than Breadth First Search.
+<blockquote>
+To see the real benefits of bidirectional search you would need a larger branching factor than is possible in a 2-dimensional maze. However, in a fairly open maze with the initial and goal state equally spaced at one-third and two-thirds of the width, bidirectional search should theoretically take about half the time of BFS.
+</blockquote>
+<table>
+<tr>
+<td><img src="./wk4_bid.jpg" height="256" width="256"></td><td><img src="./wk4_bid_BFS.jpg" height="256" width="256"></td><td><img src="./wk4_bid_bidirectional.jpg" height="256" width="256"></td>
+</tr>
+<tr>
+<td align="center">maze</cd><td align="center">Breadth First Search</cd><td align="center">Bidirectional Search</cd>
+</tr>
+</table>
+<p>
+
+<li> an environment for which Greedy Search takes much longer than A*Search.
+<table cellpadding="5">
+<tr>
+<td><img src="./wk4_bar.jpg" height="256" width="256"></td><td><img src="./wk4_bar_greedy.jpg" height="256" width="256"></td><td><img src="./wk4_bar_astar.jpg" height="256" width="256"></td>
+</tr>
+<tr>
+<td align="center">Maze</cd><td align="center">Greedy Search</cd><td align="center">A*Search</cd>
+</tr>
+</table>
+<p>
+
+<li> an environment for which Greedy Search produces a path that is much longer than the optimal path.
+<table cellpadding="5">
+<tr>
+<td><img src="./wk4_grate.jpg" height="256" width="256"></td><td><img src="./wk4_grate_greedy1127.jpg" height="256" width="256"></td><td><img src="./wk4_grate_astar77.jpg" height="256" width="256"></td>
+</tr>
+<tr>
+<td align="center">Maze</cd><td align="center">Greedy Search (1127)</cd><td align="center">A*Search (77)</cd>
+</tr>
+</table>
+<p>
+
+<li> an environment for which A*Search with the Euclidean Distance heuristic takes much longer than with the Manhattan Distance heuristic.
+<table cellpadding="5">
+<tr>
+<td><img src="./wk4_diag.jpg" height="256" width="256"></td><td><img src="./wk4_diag_euclid.jpg" height="256" width="256"></td><td><img src="./wk4_diag_manhat.jpg" height="256" width="256"></td>
+</tr>
+<tr>
+<td align="center">Maze</cd><td align="center">A*Search (Euclidean)</cd><td align="center">A*Search (Manhattan)</cd>
+</tr>
+</table>
+<p>
+
+<li> an environment that is interesting for some other reason.
+</ol>
+
+<hr align=left>
+</body>
+</html>
+

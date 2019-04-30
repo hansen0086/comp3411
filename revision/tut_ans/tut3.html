@@ -1,0 +1,205 @@
+<HTML>
+<HEAD>
+  <TITLE>COMP3411/9414 Week 3 Tutorial Solutions</TITLE>
+</HEAD>
+<style><!-- A {text-decoration:none} --></style>
+<BODY ALINK="#660000" VLINK="#000066" LINK="#800066" BGCOLOR="#ffffff">
+
+<H2><P><CENTER><B><FONT COLOR="#000066">
+COMP3411/9414 Artificial Intelligence<br>
+Session 1, 2019</FONT></B></CENTER></P></H2>
+
+<H2><P><CENTER><B>Week 3 Tutorial Solutions</B></CENTER></P></H2>
+
+<P><B><FONT SIZE=-1>
+<SCRIPT LANGUAGE="JavaScript">
+document.write("This page was last updated: " +
+document.lastModified);
+</SCRIPT>
+</FONT>
+</B>
+</P>
+
+<hr align=left>
+
+<b>Activity 3.1</b> (Exercise 3.9 from Russell &amp; Norvig)
+<hr>
+The "Missionaries and Cannibals" problem is usually stated as follows:
+Three missionaries and three cannibals are on one side of the river,
+along with a boat that can hold one or two people.
+Find a way to get everyone to the other side, without ever leaving
+a group of missionaries in one place outnumbered by the cannibals
+in that place. This problem is famous in AI because it was the
+subject of the first paper that approached problem formulation
+from an analytical viewpoint (Amarel, 1968).
+(You can even play the puzzle on-line at
+<a href="http://www.learn4good.com/games/puzzle/boat.htm">www.learn4good.com/games/puzzle/boat.htm"</a>)
+<p>
+<ol type="1">
+<li> Formulate the problem precisely, making only those distinctions
+necessary to ensure a valid solution, and draw a diagram of the complete
+state space.
+<blockquote>
+Each state can be characterized by listing the number of missionaries
+(0-3) and cannibals (0-3) on the original side of the river,
+and 1 or 0 to indicate whether or not the boat is on that side;
+it is assumed that whatever is not listed must be on the far side of the river.
+There are 4 x 4 x 2 = 32 states in total, but only 28 of them
+are accessible from the initial state (3,3,1). Twelve of these
+represent "dead" states in which one or more missionaries are eaten.
+Here is a diagram of the complete state space:
+</blockquote>
+<p>
+<img src="./wk3_miss_cann.jpg">
+<p>
+
+<li> Solve the problem optimally using an appropriate
+search algorithm; is it a good idea to check for repeated states?
+<blockquote>
+There are four ways to get from the initial state
+(3,3,1) to the final state (0,0,0) in 11 steps.
+It is definitely a good idea to check for repeated states.
+Using Breadth-First Search, for example, there are
+6 nodes at depth 2 and 25 at depth 3; but, if we avoid
+expanding previously encountered states, there will only be
+2 nodes at depth 2 and 3 at depth 3. Depth-First Search
+is only able to avoid states which are repeated along the same
+branch; but the number of nodes is still reduced to
+3 at depth 2 and 8 at depth 3.
+</blockquote>
+<p>
+
+<li> Why do you think people have a hard time solving this
+puzzle, given that the state space is so simple?
+<blockquote>
+The step at which people seem to have most difficulty is
+the one in the centre of the diagram, from (1,1,0) to (2,2,1).
+Since the objective is to get all 6 people to the far side
+of the river, it seems counterintuitive to bring
+two people back to the original side;
+it violates the "heuristic" of maximizing the
+total number of people on the far side of the river.
+</blockquote>
+
+</ol>
+<p>
+
+<hr>
+<b>Activity 3.2</b> Refining Your Understanding of Searches using Mazes
+<hr>
+Discuss your findings and insights from the 'Fun with Mazes' activity.  Compare your findings and discuss any discrepancies.
+<ol type=a>
+<li>
+Generate a random Tree Maze and compare the running time of Breadth First Search and Depth First Search on this maze. Repeat this for a couple of other random Tree Mazes. Time the algorithms with a stopwatch if you can. Which algorithm is faster?
+<blockquote>
+Generally, BFS is a bit faster.
+</blockquote>
+
+<li>
+Repeat the steps from part (a), this time with Concentric Graph Mazes. Which algorithm is faster?
+<blockquote>
+Depth First Search is faster.
+</blockquote>
+
+<li>
+Use the widget to edit a maze by clicking on the coloured squares, and then clicking on the Maze. Try to design a maze for which BFS finds a solution considerably faster than DFS. You can change the structure of the maze, and specify a starting and ending point anywhere inside the maze. Try to (briefly) explain in words what makes your environment easy for BFS but hard for DFS.
+<blockquote>
+This would be the case for a fairly open maze, with a single goal which is relatively close to the initial state. BFS will find this goal quickly. DFS may occasionally get lucky, but will often get lost exploring the vast expanses around the goal before finally reaching it.
+</blockquote>
+<table cellpadding="5">
+<tr>
+<td><img src="./wk3_maze.jpg" height="256" width="256"></td><td><img src="./wk3_maze_BFS.jpg" height="256" width="256"></td><td><img src="./wk3_maze_DFS.jpg" height="256" width="256"></td>
+</tr>
+<tr>
+<td align="center">maze</cd><td align="center">Breadth First Search</cd><td align="center">Depth First Search</cd>
+</tr>
+</table>
+<p>
+
+<li>
+Use the widget to create a maze for which DFS would find a solution considerably faster than BFS. You should assume that there can be multiple ending points (red squares) and that the algorithm only needs to reach one of them. Try to explain in words what makes your environment easy for DFS but hard for BFS.
+<blockquote>
+This would be true for a search problem where there exist many solutions at a fairly deep level, such that DFS will find a solution more or less as soon as it gets to that depth for the first time. For example, imagine you are shipwrecked in the middle of a lake and you need to find a path to the shoreline, with a series of small steps either up, down, left or right. DFS will find a path quickly, whereas BFS will spend a lot of time exploring all paths shorter than the radius of the lake.
+</blockquote>
+<p>
+<table cellpadding="5">
+<tr>
+<td><img src="./wk3_lake.jpg" height="256" width="256"></td><td><img src="./wk3_lake_BFS.jpg" height="256" width="256"></td><td><img src="./wk3_lake_DFS.jpg" height="256" width="256"></td>
+</tr>
+<tr>
+<td align="center">"lake" maze</cd><td align="center">Breadth First Search</cd><td align="center">Depth First Search</cd>
+</tr>
+</table>
+<p>
+
+<li>
+Try running Iterative Deepening Search on a random maze. Why is it so slow?
+<blockquote>
+Iterative Deepening Search generally performs poorly in situations (like this one) with a low branching factor. Another example is the
+Missionaries and Cannibals problem.
+As an extreme example, consider a problem with a branching
+factor of 1 at every move, and a solution at depth <em>n</em>.
+Depth-First Search will take exactly <em>n</em> expansions
+to find a solution, while Iterative Deepening Search
+will take O(<em>n</em><sup>2</sup>).
+</blockquote>
+For which type of problem (probably not a maze) would IDS be superior to both BFS and DFS?
+<blockquote>
+For problems with a larger branching factor (for example, the 8-Puzzle, with branching factor 4), IDS would be superior to both BFS and DFS (in the sense of finding a solution in reasonable time without running out of memory).
+</blockquote>
+
+</ol>
+
+<hr>
+<b>Activitity 3.3</b> Reactive Agents
+<hr>
+Check that you understand the Identifying Braitenberg Vehicles activity on the Reactive Agents page.
+<p>
+
+<hr>
+<b>Activity 3.4</b> Further Discussion
+<hr>
+Any remaining tutorial time can be used for further discussion related to uninformed search strategies, including the Pick a Problem and Map out the State Space activity on the Path Search Problems page; for example:
+<p>
+<ul>
+<li> Additional Mazes and search strategies
+<li> Fox, Goose and Bag of Beans
+<li> Tower of Hanoi
+<li> Bridge and Torch puzzle
+<li> 5-Puzzle
+</ul>
+
+<hr>
+
+If additional time remains in the tutorial, you can skip ahead to
+cover Activities 4.3 and 4.4 from next week's tutorial questions.
+
+<hr>
+<b>Answers to Romania Path Search Activities:</b>
+<hr>
+
+<ul>
+
+<li>
+Breadth First Search, to find a path from Arad to Bucharest:
+<blockquote>
+Arad, Sibiu, Timisoara, Zerind, Fagaras.
+</blockquote>
+
+<li>
+Uniform Cost Search, to find a path from Dobreta to Fagaras:
+<blockquote>
+Dobreta (0), Mehadia (75), Craiova (120), Lugoj(145), Timisoara (256), Pitesti (258), Rimnicu Vilcea (266), Sibiu (346), Bucharest (359), Arad (374), Urziceni (444), Fagaras (445).
+</blockquote>
+
+<li>
+Depth First Search, to find a path from Dobreta to Zerind:
+<blockquote>
+Dobreta, Craiova, Pitesti, Bucharest, Fagaras, Sibiu, Arad, Timisoara, Lugoj, Mehadia.
+</blockquote>
+
+<p>
+
+<hr align=left>
+</body>
+</html>
